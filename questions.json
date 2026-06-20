@@ -1,0 +1,229 @@
+[
+  {
+    "id": "q01",
+    "axis": "attachment",
+    "text": "パートナーとの関係で、自分の気持ちや考えを素直に打ち明けられると感じる",
+    "weight": 1.5,
+    "direction": 1,
+    "reversed": false,
+    "secondary": {
+      "axis": "words",
+      "weight": 0.3
+    },
+    "note": "安定型の核心指標。感情開示の容易さを測定"
+  },
+  {
+    "id": "q02",
+    "axis": "words",
+    "text": "パートナーから「好き」「ありがとう」などの言葉をかけてもらうと、強く愛情を実感できる",
+    "weight": 1.2,
+    "direction": 1,
+    "reversed": false,
+    "secondary": {
+      "axis": "attachment",
+      "weight": 0.3
+    },
+    "note": "言葉の愛の言語の主軸。言語的肯定を受け取る側の感受性"
+  },
+  {
+    "id": "q03",
+    "axis": "acts",
+    "text": "パートナーが率先して行動や手助けで支えてくれると、愛情を感じる",
+    "weight": 1.2,
+    "direction": 1,
+    "reversed": false,
+    "secondary": null,
+    "note": "奉仕の行為（Acts of Service）の受け取り側感度"
+  },
+  {
+    "id": "q04",
+    "axis": "time",
+    "text": "パートナーと一緒に過ごす時間こそが、最も大切な愛情表現だと思う",
+    "weight": 1.2,
+    "direction": 1,
+    "reversed": false,
+    "secondary": {
+      "axis": "attachment",
+      "weight": 0.3
+    },
+    "note": "一緒にいる時間の重視度。安定型は質の高い共有時間を好む"
+  },
+  {
+    "id": "q05",
+    "axis": "touch",
+    "text": "パートナーとの身体的な触れ合い（手を繋ぐ・ハグなど）が、愛情を実感する大切な手段だ",
+    "weight": 1.2,
+    "direction": 1,
+    "reversed": false,
+    "secondary": {
+      "axis": "attachment",
+      "weight": 0.3
+    },
+    "note": "身体的接触（Physical Touch）の愛の言語主軸"
+  },
+  {
+    "id": "q06",
+    "axis": "words",
+    "text": "愛情は言葉より行動で示すべきで、言葉だけでは物足りないと感じる",
+    "weight": 1.0,
+    "direction": 1,
+    "reversed": true,
+    "secondary": null,
+    "note": "【逆転項目】同意→words軸スコア低下。言葉の言語に低感度な人を識別"
+  },
+  {
+    "id": "q07",
+    "axis": "attachment",
+    "text": "パートナーからの返信が少し遅れるだけで、不安や焦りを感じてしまう",
+    "weight": 1.5,
+    "direction": 1,
+    "reversed": true,
+    "secondary": null,
+    "note": "【逆転項目】同意→attachment軸スコア低下（不安型傾向の測定）"
+  },
+  {
+    "id": "q08",
+    "axis": "acts",
+    "text": "特別なイベントより、日常の小さな気遣いや行動の方に、より深く愛情を感じる",
+    "weight": 1.0,
+    "direction": 1,
+    "reversed": false,
+    "secondary": {
+      "axis": "time",
+      "weight": 0.3
+    },
+    "note": "日常的な奉仕行為と継続的な時間共有の複合測定"
+  },
+  {
+    "id": "q09",
+    "axis": "time",
+    "text": "パートナーが自分との予定よりも仕事や友人を優先すると、強い寂しさを覚える",
+    "weight": 1.0,
+    "direction": 1,
+    "reversed": false,
+    "secondary": null,
+    "note": "共有時間の剥奪感。不安型との相関があるがtime軸のメイン指標として扱う"
+  },
+  {
+    "id": "q10",
+    "axis": "touch",
+    "text": "スキンシップが少ない関係では、なんとなく距離感や物足りなさを感じてしまう",
+    "weight": 1.0,
+    "direction": 1,
+    "reversed": false,
+    "secondary": null,
+    "note": "身体的接触の欠如に対する感受性"
+  },
+  {
+    "id": "q11",
+    "axis": "words",
+    "text": "パートナーへの感謝や愛情は、言葉でこまめに伝えるようにしている（またはそうしたいと思う）",
+    "weight": 1.0,
+    "direction": 1,
+    "reversed": false,
+    "secondary": null,
+    "note": "言葉の言語を表現する側の能動性も測定"
+  },
+  {
+    "id": "q12",
+    "axis": "attachment",
+    "text": "一人の時間を持つことで気持ちがリセットされ、またパートナーに向き合えると感じる",
+    "weight": 1.2,
+    "direction": 1,
+    "reversed": false,
+    "secondary": {
+      "axis": "time",
+      "weight": 0.3
+    },
+    "note": "安定型の特徴：個と共存の両立。自律性と関係性の健全なバランス"
+  },
+  {
+    "id": "q13",
+    "axis": "acts",
+    "text": "パートナーのために何かしてあげることが、自分にとっての主な愛情表現の形だ",
+    "weight": 1.2,
+    "direction": 1,
+    "reversed": false,
+    "secondary": null,
+    "note": "奉仕行為を与える側のスタイル測定。言語を使わない愛の表現者"
+  },
+  {
+    "id": "q14",
+    "axis": "time",
+    "text": "忙しい日でも、パートナーと2人きりでいる時間を意識的に確保しようとする",
+    "weight": 1.0,
+    "direction": 1,
+    "reversed": false,
+    "secondary": {
+      "axis": "acts",
+      "weight": 0.3
+    },
+    "note": "時間を能動的に作る行動性も測定（acts軸への副次寄与）"
+  },
+  {
+    "id": "q15",
+    "axis": "touch",
+    "text": "気分が落ち込んでいるとき、言葉よりも体に触れてもらう方が気持ちが楽になる",
+    "weight": 1.2,
+    "direction": 1,
+    "reversed": false,
+    "secondary": null,
+    "note": "情緒的サポートにおける身体接触の優先度"
+  },
+  {
+    "id": "q16",
+    "axis": "words",
+    "text": "パートナーとは言葉にしなくても察し合えるのが理想で、いちいち言葉で確認する必要は感じない",
+    "weight": 1.0,
+    "direction": 1,
+    "reversed": true,
+    "secondary": null,
+    "note": "【逆転項目】同意→words軸スコア低下。暗黙の理解を好む傾向の識別"
+  },
+  {
+    "id": "q17",
+    "axis": "attachment",
+    "text": "相手が本当に自分のことを好きかどうか、何度も確認したくなることがある",
+    "weight": 1.2,
+    "direction": 1,
+    "reversed": true,
+    "secondary": null,
+    "note": "【逆転項目】同意→attachment軸スコア低下。確認欲求による不安型指標"
+  },
+  {
+    "id": "q18",
+    "axis": "acts",
+    "text": "パートナーがサプライズや工夫を凝らした行動をしてくれると、特別な喜びを感じる",
+    "weight": 1.0,
+    "direction": 1,
+    "reversed": false,
+    "secondary": {
+      "axis": "words",
+      "weight": 0.3
+    },
+    "note": "特別な奉仕行為への感受性。言葉ではなく形ある行動への反応"
+  },
+  {
+    "id": "q19",
+    "axis": "time",
+    "text": "パートナーと「何もしない時間」をただ隣にいるだけで、十分に満足できる",
+    "weight": 1.2,
+    "direction": 1,
+    "reversed": false,
+    "secondary": {
+      "axis": "touch",
+      "weight": 0.3
+    },
+    "note": "質より存在の共有を重視。隣にいる物理的近さはtouch軸にも寄与"
+  },
+  {
+    "id": "q20",
+    "axis": "attachment",
+    "text": "恋愛においては、相手への信頼感は焦らず時間をかけて自然に育まれるものだと思う",
+    "weight": 1.5,
+    "direction": 1,
+    "reversed": false,
+    "secondary": null,
+    "note": "安定型の核心指標。信頼の構築に対する余裕と長期的視野"
+  }
+]

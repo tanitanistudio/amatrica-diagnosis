@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>アマトリカ診断 — あなたの「愛し方」タイプを知る</title>
+  <meta name="description" content="心理学が明かす、あなただけの「愛の言語」。愛着スタイル×愛の言語で判定する8タイプ診断。約3分で完了。">
+  <meta property="og:title" content="アマトリカ診断 — あなたの「愛し方」タイプを知る">
+  <meta property="og:description" content="愛着スタイル×愛の言語で判定する8タイプ診断。約3分で完了。">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FDF8F3;
+      --surface: #FFFFFF;
+      --surface-2: #FAF4EE;
+      --text: #2D2420;
+      --text-muted: #7A6E6A;
+      --text-light: #A89892;
+      --border: #E8DDD8;
+      --accent: #C96B4A;
+      --accent-hover: #B55C3C;
+      --accent-light: #F5EAE4;
+      --accent-2: #D4829A;
+      --accent-2-light: #FAF0F4;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+      --shadow-sm: 0 1px 4px rgba(45,36,32,.06);
+      --shadow-md: 0 4px 16px rgba(45,36,32,.10);
+      --shadow-lg: 0 8px 32px rgba(45,36,32,.12);
+      --font-sans: 'Noto Sans JP', sans-serif;
+      --font-en: 'Inter', sans-serif;
+      --transition: 220ms ease;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 1rem;
+    }
+
+    /* NAV */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(253,248,243,.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 1.25rem;
+    }
+    .nav-inner {
+      max-width: 1080px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 56px;
+    }
+    .nav-logo {
+      font-family: var(--font-en); font-size: .75rem; font-weight: 600;
+      letter-spacing: .12em; color: var(--text-muted); text-decoration: none;
+      text-transform: uppercase;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-cta {
+      background: var(--accent); color: #fff;
+      border: none; border-radius: 999px;
+      padding: .45rem 1.1rem; font-size: .85rem; font-weight: 700;
+      cursor: pointer; text-decoration: none;
+      transition: background var(--transition), transform var(--transition);
+    }
+    .nav-cta:hover { background: var(--accent-hover); transform: translateY(-1px); }
+    .nav-cta:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+    /* HERO */
+    .hero {
+      padding: 5rem 1.25rem 4rem;
+      text-align: center;
+      background: linear-gradient(160deg, #FDF8F3 0%, #FAF0F4 55%, #F5EAE4 100%);
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: .4rem;
+      background: var(--accent-light); color: var(--accent);
+      border-radius: 999px; padding: .3rem .85rem;
+      font-size: .75rem; font-weight: 700; letter-spacing: .05em;
+      margin-bottom: 1.5rem;
+    }
+    .hero-title {
+      font-size: clamp(2rem, 6vw, 3.25rem);
+      font-weight: 700; line-height: 1.25;
+      letter-spacing: -.02em;
+      margin-bottom: 1.1rem;
+    }
+    .hero-title em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: 1.05rem; color: var(--text-muted);
+      max-width: 480px; margin: 0 auto 2.5rem;
+    }
+    .hero-cta-group { display: flex; flex-direction: column; align-items: center; gap: .85rem; }
+    .btn-primary {
+      display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+      background: var(--accent); color: #fff;
+      border: none; border-radius: 999px;
+      padding: .95rem 2.5rem; font-size: 1.05rem; font-weight: 700;
+      cursor: pointer; text-decoration: none;
+      box-shadow: 0 4px 20px rgba(201,107,74,.35);
+      transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover); transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(201,107,74,.4);
+    }
+    .btn-primary:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+    .btn-primary svg { flex-shrink: 0; }
+    .hero-meta {
+      display: flex; gap: 1.25rem; justify-content: center; flex-wrap: wrap;
+      font-size: .8rem; color: var(--text-muted);
+    }
+    .hero-meta span { display: flex; align-items: center; gap: .3rem; }
+
+    /* SECTION */
+    section { padding: 4rem 1.25rem; }
+    .section-inner { max-width: 1080px; margin: 0 auto; }
+    .section-label {
+      font-family: var(--font-en); font-size: .7rem; font-weight: 700;
+      letter-spacing: .14em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: .6rem;
+    }
+    .section-title {
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: 700; line-height: 1.3; margin-bottom: 1rem;
+    }
+    .section-lead { color: var(--text-muted); max-width: 540px; margin-bottom: 2.5rem; }
+
+    /* FEATURES */
+    .features { background: var(--surface); }
+    .features-grid {
+      display: grid; gap: 1.25rem;
+      grid-template-columns: 1fr;
+    }
+    .feature-card {
+      background: var(--bg); border-radius: var(--radius-lg);
+      padding: 1.75rem 1.5rem;
+      border: 1px solid var(--border);
+    }
+    .feature-icon {
+      width: 48px; height: 48px; border-radius: var(--radius-md);
+      background: var(--accent-light); display: flex; align-items: center;
+      justify-content: center; font-size: 1.5rem; margin-bottom: 1rem;
+    }
+    .feature-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: .5rem; }
+    .feature-card p { font-size: .9rem; color: var(--text-muted); line-height: 1.65; }
+
+    /* TYPES */
+    .types { background: var(--surface-2); }
+    .types-grid {
+      display: grid; gap: 1rem;
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .type-card {
+      background: var(--surface); border-radius: var(--radius-md);
+      padding: 1.1rem 1rem; border: 1px solid var(--border);
+      display: flex; align-items: flex-start; gap: .75rem;
+      transition: transform var(--transition), box-shadow var(--transition);
+      text-decoration: none; color: inherit;
+    }
+    .type-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .type-icon {
+      width: 40px; height: 40px; border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; flex-shrink: 0;
+    }
+    .type-card-info { min-width: 0; }
+    .type-badge {
+      font-family: var(--font-en); font-size: .65rem; font-weight: 600;
+      letter-spacing: .06em; text-transform: uppercase;
+      margin-bottom: .25rem;
+    }
+    .type-name { font-size: .9rem; font-weight: 700; }
+    .type-catch { font-size: .75rem; color: var(--text-muted); margin-top: .2rem; }
+
+    /* PERSONA */
+    .persona-cards { display: grid; gap: 1rem; }
+    .persona-card {
+      background: var(--surface); border-radius: var(--radius-md);
+      padding: 1.25rem 1.25rem; border: 1px solid var(--border);
+      display: flex; gap: 1rem; align-items: flex-start;
+    }
+    .persona-avatar {
+      width: 44px; height: 44px; border-radius: 999px;
+      flex-shrink: 0; font-size: 1.5rem;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--accent-light);
+    }
+    .persona-card h4 { font-size: .95rem; font-weight: 700; margin-bottom: .3rem; }
+    .persona-card p { font-size: .85rem; color: var(--text-muted); }
+
+    /* FAQ */
+    .faq { background: var(--surface); }
+    .faq-list { display: flex; flex-direction: column; gap: .5rem; }
+    .faq-item {
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .faq-q {
+      width: 100%; text-align: left;
+      padding: 1rem 1.25rem; background: transparent;
+      border: none; cursor: pointer; font-family: var(--font-sans);
+      font-size: .95rem; font-weight: 500; color: var(--text);
+      display: flex; align-items: center; justify-content: space-between; gap: .75rem;
+      transition: background var(--transition);
+    }
+    .faq-q:hover { background: var(--bg); }
+    .faq-q:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+    .faq-icon {
+      width: 22px; height: 22px; border-radius: 999px;
+      background: var(--accent-light); color: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .85rem; flex-shrink: 0;
+      transition: transform var(--transition);
+    }
+    .faq-item[open] .faq-icon { transform: rotate(45deg); }
+    .faq-a {
+      padding: 0 1.25rem 1rem;
+      font-size: .9rem; color: var(--text-muted); line-height: 1.7;
+    }
+
+    /* CTA BANNER */
+    .cta-banner {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      padding: 3.5rem 1.25rem; text-align: center;
+    }
+    .cta-banner h2 {
+      color: #fff; font-size: clamp(1.4rem, 4vw, 2rem);
+      font-weight: 700; margin-bottom: .75rem;
+    }
+    .cta-banner p { color: rgba(255,255,255,.85); margin-bottom: 2rem; }
+    .btn-white {
+      display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+      background: #fff; color: var(--accent);
+      border: none; border-radius: 999px;
+      padding: .95rem 2.5rem; font-size: 1.05rem; font-weight: 700;
+      cursor: pointer; text-decoration: none;
+      box-shadow: 0 4px 20px rgba(0,0,0,.12);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,.18); }
+    .btn-white:focus-visible { outline: 3px solid #fff; outline-offset: 4px; }
+
+    /* FOOTER */
+    footer {
+      background: var(--text); color: rgba(255,255,255,.55);
+      padding: 2rem 1.25rem; text-align: center;
+      font-size: .8rem;
+    }
+    footer a { color: rgba(255,255,255,.7); text-decoration: none; }
+    footer a:hover { color: #fff; }
+
+    /* RESUME BANNER */
+    .resume-banner {
+      background: var(--accent-light); border-bottom: 1px solid rgba(201,107,74,.2);
+      padding: .75rem 1.25rem;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: .75rem; flex-wrap: wrap;
+    }
+    .resume-banner p { font-size: .875rem; color: var(--accent); font-weight: 500; }
+    .resume-banner-btns { display: flex; gap: .5rem; }
+    .btn-resume, .btn-resume-dismiss {
+      border-radius: 999px; padding: .35rem .85rem;
+      font-size: .8rem; font-weight: 600; cursor: pointer; border: none;
+      transition: background var(--transition);
+    }
+    .btn-resume { background: var(--accent); color: #fff; }
+    .btn-resume:hover { background: var(--accent-hover); }
+    .btn-resume-dismiss { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+    .btn-resume-dismiss:hover { background: rgba(201,107,74,.08); }
+    .hidden { display: none; }
+
+    /* BREAKPOINTS */
+    @media (min-width: 640px) {
+      .features-grid { grid-template-columns: repeat(3, 1fr); }
+      .persona-cards { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (min-width: 720px) {
+      .types-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+    @media (min-width: 1080px) {
+      .hero { padding: 7rem 1.25rem 5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- RESUME BANNER (shown if in-progress) -->
+<div class="resume-banner hidden" id="resumeBanner" role="alert">
+  <p>✏️ 前回の途中保存データがあります（<span id="resumeProgress"></span>問まで回答済み）</p>
+  <div class="resume-banner-btns">
+    <a href="quiz.html" class="btn-resume">続きから始める</a>
+    <button class="btn-resume-dismiss" onclick="dismissResume()" aria-label="バナーを閉じる">×</button>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav" aria-label="サイトナビゲーション">
+  <div class="nav-inner">
+    <a class="nav-logo" href="lp.html">AI<span>-</span>KNOW <span style="color:var(--text-muted)">/ amatrica</span></a>
+    <a class="nav-cta" href="quiz.html">診断を始める</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-badge" aria-label="新着診断">✨ 新登場</div>
+  <h1 class="hero-title">あなたの<em>「愛し方」</em>を<br>知っていますか？</h1>
+  <p class="hero-sub">心理学が明かす、あなただけの「愛の言語」。<br>愛着スタイル×愛の言語で8タイプを判定します。</p>
+  <div class="hero-cta-group">
+    <a href="quiz.html" class="btn-primary">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 8 16 12 12 16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      無料で診断する
+    </a>
+    <div class="hero-meta" aria-label="診断の概要">
+      <span>⏱ 約3〜5分</span>
+      <span>📝 全20問</span>
+      <span>🎯 8タイプ</span>
+      <span>🔒 登録不要</span>
+    </div>
+  </div>
+</header>
+
+<!-- FEATURES -->
+<section class="features" aria-labelledby="featuresTitle">
+  <div class="section-inner">
+    <div class="section-label">Features</div>
+    <h2 class="section-title" id="featuresTitle">この診断の3つの特徴</h2>
+    <p class="section-lead">単なるタイプ分けではなく、あなたの恋愛パターンを深く理解するために設計されています。</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon" aria-hidden="true">🔬</div>
+        <h3>心理学的根拠</h3>
+        <p>「愛着理論（Attachment Theory）」と「愛の言語（Love Languages）」という2つの学術的理論を組み合わせた診断設計。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" aria-hidden="true">🧩</div>
+        <h3>複合8タイプ判定</h3>
+        <p>愛着スタイル（安定型／不安型）×主要な愛の言語（4種）の掛け合わせで、あなただけのタイプを特定します。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" aria-hidden="true">💑</div>
+        <h3>相性マップ付き</h3>
+        <p>自分のタイプだけでなく、相性の良いタイプ・注意すべきパターンも提示。パートナーと一緒に受けても楽しめます。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TYPES -->
+<section class="types" aria-labelledby="typesTitle">
+  <div class="section-inner">
+    <div class="section-label">Types</div>
+    <h2 class="section-title" id="typesTitle">8つの「愛し方」タイプ</h2>
+    <p class="section-lead">あなたはどのタイプ？診断して確かめてみよう。</p>
+    <div class="types-grid">
+      <a href="result.html?type=SW" class="type-card" aria-label="言葉の守護者タイプの詳細を見る">
+        <div class="type-icon" style="background:#EEF4FB" aria-hidden="true">💬</div>
+        <div class="type-card-info">
+          <div class="type-badge" style="color:#6B9EC9">安定 × 言葉</div>
+          <div class="type-name">言葉の守護者</div>
+          <div class="type-catch">言葉で愛を育てる</div>
+        </div>
+      </a>
+      <a href="result.html?type=SA" class="type-card" aria-label="行動の設計者タイプの詳細を見る">
+        <div class="type-icon" style="background:#EEF6EE" aria-hidden="true">🛠</div>
+        <div class="type-card-info">
+          <div class="type-badge" style="color:#5A9D6B">安定 × 行為</div>
+          <div class="type-name">行動の設計者</div>
+          <div class="type-catch">愛を行動で示す</div>
+        </div>
+      </a>
+      <a href="result.html?type=ST" class="type-card" aria-label="時間の共有者タイプの詳細を見る">
+        <div class="type-icon" style="background:#FDF5E6" aria-hidden="true">🌅</div>
+        <div class="type-card-info">
+          <div class="type-badge" style="color:#C9954A">安定 × 時間</div>
+          <div class="type-name">時間の共有者</div>
+          <div class="type-catch">共に過ごす時を大切に</div>
+        </div>
+      </a>
+      <a href="result.html?type=SC" class="type-card" aria-label="ぬくもりの探求者タイプの詳細を見る">
+        <div class="type-icon" style="background:#FAEEE8" aria-hidden="true">🤝</div>
+        <div class="type-card-info">
+          <div class="type-badge" style="color:#C96B4A">安定 × 触れ合い</div>
+          <div class="type-name">ぬくもりの探求者</div>
+          <div class="type-catch">体温で愛を確かめる</div>
+        </div>
+      </a>
+      <a href="result.html?type=AW" class="type-card" aria-label="言葉の渇望者タイプの詳細を見る">
+        <div class="type-icon" style="background:#FAF0F4" aria-hidden="true">🌸</div>
+        <div class="type-card-info">
+          <div class="type-badge" style="color:#D4829A">不安 × 言葉</div>
+          <div class="type-name">言葉の渇望者</div>
+          <div class="type-catch">言葉で安心を求める</div>
+        </div>
+      </a>
+      <a href="result.html?type=AA" class="type-card" aria-label="証明の求道者タイプの詳細を見る">
+        <div class="type-icon" style="background:#F5F0F8" aria-hidden="true">🔍</div>
+        <div class="type-card-info">
+          <div class="type-badge" style="color:#9B7EC9">不安 × 行為</div>
+          <div class="type-name">証明の求道者</div>
+          <div class="type-catch">行動で愛を測る</div>
+        </div>
+      </a>
+      <a href="result.html?type=AT" class="type-card" aria-label="密着の求道者タイプの詳細を見る">
+        <div class="type-icon" style="background:#F0F0F8" aria-hidden="true">🌙</div>
+        <div class="type-card-info">
+          <div class="type-badge" style="color:#7E7EC9">不安 × 時間</div>
+          <div class="type-name">密着の求道者</div>
+          <div class="type-catch">一緒にいる時間に安心</div>
+        </div>
+      </a>
+      <a href="result.html?type=AC" class="type-card" aria-label="感覚の依存者タイプの詳細を見る">
+        <div class="type-icon" style="background:#FDF0F4" aria-hidden="true">💗</div>
+        <div class="type-card-info">
+          <div class="type-badge" style="color:#D47A9A">不安 × 触れ合い</div>
+          <div class="type-name">感覚の依存者</div>
+          <div class="type-catch">触れ合いで心が満たされる</div>
+        </div>
+      </a>
+    </div>
+    <div style="text-align:center;margin-top:2rem">
+      <a href="quiz.html" class="btn-primary">診断してタイプを知る</a>
+    </div>
+  </div>
+</section>
+
+<!-- PERSONA -->
+<section aria-labelledby="personaTitle" style="background:var(--surface)">
+  <div class="section-inner">
+    <div class="section-label">こんな人に</div>
+    <h2 class="section-title" id="personaTitle">こんな方におすすめ</h2>
+    <div class="persona-cards">
+      <div class="persona-card">
+        <div class="persona-avatar" aria-hidden="true">👩</div>
+        <div>
+          <h4>パートナーとのすれ違いに悩む方</h4>
+          <p>「なぜ伝わらないのか」の原因が、愛の言語の違いにあるかもしれません。</p>
+        </div>
+      </div>
+      <div class="persona-card">
+        <div class="persona-avatar" aria-hidden="true">👨</div>
+        <div>
+          <h4>自己理解を深めたい方</h4>
+          <p>心理学的な根拠のある診断で、自分の恋愛パターンを客観的に把握できます。</p>
+        </div>
+      </div>
+      <div class="persona-card">
+        <div class="persona-avatar" aria-hidden="true">💍</div>
+        <div>
+          <h4>理想の相手を探している方</h4>
+          <p>相性の良いタイプを知ることで、パートナー選びの参考にできます。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" aria-labelledby="faqTitle">
+  <div class="section-inner">
+    <div class="section-label">FAQ</div>
+    <h2 class="section-title" id="faqTitle">よくある質問</h2>
+    <div class="faq-list" role="list">
+      <details class="faq-item" role="listitem">
+        <summary class="faq-q">
+          診断結果は保存されますか？
+          <span class="faq-icon" aria-hidden="true">+</span>
+        </summary>
+        <p class="faq-a">はい、診断結果はお使いのブラウザのローカルストレージに保存されます。90日間有効で、同じデバイス・ブラウザからいつでも確認できます。個人情報はサーバーに送信されません。</p>
+      </details>
+      <details class="faq-item" role="listitem">
+        <summary class="faq-q">
+          途中で中断しても大丈夫ですか？
+          <span class="faq-icon" aria-hidden="true">+</span>
+        </summary>
+        <p class="faq-a">大丈夫です。回答を進めるたびに自動的に保存されます。次回このページを開くと、続きから再開できます。</p>
+      </details>
+      <details class="faq-item" role="listitem">
+        <summary class="faq-q">
+          パートナーや友人と一緒に使えますか？
+          <span class="faq-icon" aria-hidden="true">+</span>
+        </summary>
+        <p class="faq-a">もちろんです。それぞれが診断を受けて結果を共有することで、お互いの愛し方の違いや相性についての話し合いのきっかけになります。</p>
+      </details>
+      <details class="faq-item" role="listitem">
+        <summary class="faq-q">
+          診断は何度でも受けられますか？
+          <span class="faq-icon" aria-hidden="true">+</span>
+        </summary>
+        <p class="faq-a">はい、何度でも受けられます。結果ページの「もう一度診断する」ボタンから再挑戦できます。</p>
+      </details>
+      <details class="faq-item" role="listitem">
+        <summary class="faq-q">
+          結果は科学的に正確ですか？
+          <span class="faq-icon" aria-hidden="true">+</span>
+        </summary>
+        <p class="faq-a">心理学の「愛着理論」と「愛の言語」という研究知見をベースに設計していますが、あくまで自己理解のための参考ツールです。臨床的な診断ではありません。</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<div class="cta-banner" role="complementary" aria-label="診断を始めるCTA">
+  <h2>「愛し方」を知れば、関係が変わる。</h2>
+  <p>心理学が明かす、あなただけの愛の言語を発見しよう。</p>
+  <a href="quiz.html" class="btn-white">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 8 16 12 12 16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+    無料で診断を始める
+  </a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 AI-KNOW. アマトリカ診断はあくまで自己理解のための参考ツールです。</p>
+</footer>
+
+<script>
+  const PROGRESS_KEY = 'aiknow_amatrica_progress';
+  const RESULT_KEY = 'aiknow_amatrica_result';
+
+  function checkResume() {
+    try {
+      const saved = localStorage.getItem(PROGRESS_KEY);
+      if (!saved) return;
+      const data = JSON.parse(saved);
+      const answeredCount = Object.keys(data.answers || {}).length;
+      if (answeredCount > 0 && answeredCount < 20) {
+        document.getElementById('resumeProgress').textContent = answeredCount;
+        document.getElementById('resumeBanner').classList.remove('hidden');
+      }
+    } catch (e) {}
+  }
+
+  function dismissResume() {
+    document.getElementById('resumeBanner').classList.add('hidden');
+  }
+
+  checkResume();
+</script>
+</body>
+</html>

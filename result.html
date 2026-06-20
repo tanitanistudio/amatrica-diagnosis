@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>診断結果 — アマトリカ診断</title>
+  <meta name="description" content="あなたのアマトリカ診断結果です。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FDF8F3;
+      --surface: #FFFFFF;
+      --surface-2: #FAF4EE;
+      --text: #2D2420;
+      --text-muted: #7A6E6A;
+      --text-light: #A89892;
+      --border: #E8DDD8;
+      --accent: #C96B4A;
+      --accent-hover: #B55C3C;
+      --accent-light: #F5EAE4;
+      --accent-2: #D4829A;
+      --type-color: #C96B4A;
+      --type-bg: #F5EAE4;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+      --shadow-sm: 0 1px 4px rgba(45,36,32,.06);
+      --shadow-md: 0 4px 16px rgba(45,36,32,.10);
+      --shadow-lg: 0 8px 32px rgba(45,36,32,.12);
+      --font-sans: 'Noto Sans JP', sans-serif;
+      --font-en: 'Inter', sans-serif;
+      --transition: 200ms ease;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* NAV */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(253,248,243,.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 1.25rem;
+    }
+    .nav-inner {
+      max-width: 720px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between; height: 52px;
+    }
+    .nav-home { font-family: var(--font-en); font-size: .72rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); text-decoration: none; }
+    .nav-home:hover { color: var(--text); }
+    .nav-retry { background: transparent; border: 1.5px solid var(--border); color: var(--text-muted); border-radius: 999px; padding: .35rem .9rem; font-size: .8rem; font-weight: 600; cursor: pointer; transition: var(--transition); text-decoration: none; }
+    .nav-retry:hover { border-color: var(--accent); color: var(--accent); }
+    .nav-retry:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    /* HERO */
+    .result-hero {
+      padding: 3rem 1.25rem 2.5rem;
+      text-align: center;
+      background: linear-gradient(160deg, var(--type-bg) 0%, #FDF8F3 100%);
+      border-bottom: 1px solid var(--border);
+    }
+    .type-eyebrow {
+      font-family: var(--font-en); font-size: .7rem; font-weight: 700;
+      letter-spacing: .14em; text-transform: uppercase;
+      color: var(--type-color); margin-bottom: .75rem;
+    }
+    .type-icon-wrap {
+      width: 88px; height: 88px; border-radius: 999px;
+      background: var(--type-bg); border: 3px solid var(--type-color);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5rem; margin: 0 auto 1.25rem;
+      box-shadow: 0 0 0 6px rgba(255,255,255,.8), 0 8px 24px rgba(0,0,0,.08);
+      animation: popIn 400ms cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(.7); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    .type-name {
+      font-size: clamp(1.6rem, 5vw, 2.2rem); font-weight: 700;
+      line-height: 1.2; margin-bottom: .5rem;
+      color: var(--type-color);
+    }
+    .type-subtitle {
+      font-size: .95rem; color: var(--text-muted); margin-bottom: 1.5rem;
+    }
+    .type-badges {
+      display: flex; gap: .5rem; justify-content: center; flex-wrap: wrap;
+      margin-bottom: 1.75rem;
+    }
+    .badge {
+      display: inline-flex; align-items: center; gap: .3rem;
+      padding: .3rem .85rem; border-radius: 999px;
+      font-size: .75rem; font-weight: 700;
+    }
+    .badge-attach { background: rgba(255,255,255,.7); border: 1px solid var(--border); color: var(--text-muted); }
+    .badge-ll { background: var(--type-bg); color: var(--type-color); border: 1px solid rgba(0,0,0,.06); }
+    .share-row {
+      display: flex; gap: .6rem; justify-content: center; flex-wrap: wrap;
+    }
+    .share-btn {
+      display: inline-flex; align-items: center; gap: .4rem;
+      padding: .55rem 1.1rem; border-radius: 999px;
+      border: 1.5px solid var(--border); background: var(--surface);
+      font-size: .82rem; font-weight: 600; cursor: pointer; color: var(--text);
+      transition: var(--transition); text-decoration: none;
+    }
+    .share-btn:hover { border-color: var(--type-color); color: var(--type-color); background: var(--type-bg); }
+    .share-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .share-x { color: #000; }
+    .share-line { color: #06C755; }
+
+    /* CONTENT */
+    .result-content { max-width: 720px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+
+    /* CARDS */
+    .result-section { margin-bottom: 2rem; }
+    .result-section-title {
+      font-size: .7rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+      font-family: var(--font-en); color: var(--text-light); margin-bottom: .75rem;
+      display: flex; align-items: center; gap: .5rem;
+    }
+    .result-section-title::after { content:''; flex:1; height:1px; background:var(--border); }
+    .card {
+      background: var(--surface); border-radius: var(--radius-lg);
+      border: 1px solid var(--border); padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .card + .card { margin-top: 1rem; }
+    .card h3 { font-size: 1rem; font-weight: 700; margin-bottom: .75rem; display: flex; align-items: center; gap: .5rem; }
+    .card p { font-size: .92rem; color: var(--text-muted); line-height: 1.75; }
+
+    /* SCORE BARS */
+    .score-bars { display: flex; flex-direction: column; gap: .75rem; }
+    .score-row { display: grid; grid-template-columns: 90px 1fr 36px; align-items: center; gap: .6rem; }
+    .score-label { font-size: .78rem; color: var(--text-muted); }
+    .score-bar-bg { height: 8px; background: var(--border); border-radius: 999px; overflow: hidden; }
+    .score-bar-fill {
+      height: 100%; border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: width 800ms cubic-bezier(.4,0,.2,1);
+      will-change: width;
+    }
+    .score-bar-fill.highlight { background: linear-gradient(90deg, var(--type-color), var(--accent-2)); }
+    .score-pct { font-family: var(--font-en); font-size: .75rem; font-weight: 700; color: var(--text-muted); text-align: right; }
+
+    /* COMPATIBILITY */
+    .compat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+    .compat-card {
+      border-radius: var(--radius-md); padding: 1rem;
+      display: flex; flex-direction: column; gap: .5rem;
+    }
+    .compat-good { background: #F0F8F1; border: 1px solid #B6DDB8; }
+    .compat-care { background: #FFF7F0; border: 1px solid #F5CBAA; }
+    .compat-label { font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+    .compat-good .compat-label { color: #4A9B5C; }
+    .compat-care .compat-label { color: #C97B4A; }
+    .compat-types { display: flex; flex-wrap: wrap; gap: .35rem; }
+    .compat-chip {
+      font-size: .78rem; font-weight: 600; padding: .25rem .6rem;
+      border-radius: 999px; background: rgba(255,255,255,.7);
+      border: 1px solid rgba(0,0,0,.08); color: var(--text);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    .compat-chip:hover { background: var(--surface); box-shadow: var(--shadow-sm); }
+
+    /* ADVICE */
+    .advice-box {
+      background: linear-gradient(135deg, var(--type-bg), var(--accent-2-light, #FAF0F4));
+      border-radius: var(--radius-lg); padding: 1.5rem;
+      border: 1px solid rgba(0,0,0,.06);
+    }
+    .advice-box p { font-size: .92rem; line-height: 1.8; color: var(--text); font-weight: 500; }
+
+    /* OTHER TYPES */
+    .other-types-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: .6rem;
+    }
+    .other-type-link {
+      display: flex; align-items: center; gap: .6rem;
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md);
+      padding: .75rem .85rem; text-decoration: none; color: var(--text);
+      transition: var(--transition);
+    }
+    .other-type-link:hover { border-color: var(--accent); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+    .other-type-link.current { border-color: var(--type-color); background: var(--type-bg); pointer-events: none; }
+    .other-type-icon { font-size: 1.3rem; flex-shrink: 0; }
+    .other-type-info { min-width: 0; }
+    .other-type-badge { font-size: .6rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--text-light); font-family: var(--font-en); }
+    .other-type-name { font-size: .85rem; font-weight: 700; }
+
+    /* RETRY */
+    .retry-section { text-align: center; margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+    .btn-retry {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: var(--accent); color: #fff; border: none; border-radius: 999px;
+      padding: .85rem 2rem; font-size: .95rem; font-weight: 700; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(201,107,74,.3);
+      transition: background var(--transition), transform var(--transition);
+      text-decoration: none;
+    }
+    .btn-retry:hover { background: var(--accent-hover); transform: translateY(-2px); }
+    .btn-retry:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+    .btn-lp {
+      display: inline-flex; align-items: center; gap: .4rem;
+      background: transparent; color: var(--text-muted); border: 1.5px solid var(--border);
+      border-radius: 999px; padding: .85rem 2rem;
+      font-size: .95rem; font-weight: 600; cursor: pointer; margin-top: .75rem;
+      transition: var(--transition); text-decoration: none;
+    }
+    .btn-lp:hover { border-color: var(--text-light); color: var(--text); }
+
+    /* NOT FOUND */
+    .not-found { text-align: center; padding: 4rem 1.25rem; }
+    .not-found h2 { font-size: 1.25rem; margin-bottom: .75rem; }
+    .not-found p { color: var(--text-muted); margin-bottom: 2rem; }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(100px);
+      background: var(--text); color: #fff; border-radius: var(--radius-md);
+      padding: .7rem 1.25rem; font-size: .85rem; font-weight: 500;
+      box-shadow: var(--shadow-lg); transition: transform 280ms cubic-bezier(.34,1.56,.64,1);
+      z-index: 9999; pointer-events: none; white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* BREAKPOINTS */
+    @media (min-width: 640px) {
+      .result-hero { padding: 4rem 1.25rem 3rem; }
+      .other-types-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+    @media (min-width: 720px) {
+      .compat-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (min-width: 1080px) {
+      .result-content { padding: 2.5rem 1.25rem 5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" aria-label="サイトナビゲーション">
+  <div class="nav-inner">
+    <a class="nav-home" href="lp.html">AI-KNOW / amatrica</a>
+    <a class="nav-retry" href="quiz.html" onclick="return confirmRetry()">もう一度診断する</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="result-hero" id="resultHero" role="banner">
+  <div class="type-eyebrow" id="typeEyebrow"></div>
+  <div class="type-icon-wrap" id="typeIconWrap" aria-hidden="true"></div>
+  <h1 class="type-name" id="typeName"></h1>
+  <p class="type-subtitle" id="typeSubtitle"></p>
+  <div class="type-badges" id="typeBadges"></div>
+  <div class="share-row" role="group" aria-label="結果をシェアする">
+    <button class="share-btn share-x" onclick="shareX()" aria-label="Xでシェア">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.26 5.632L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg>
+      Xでシェア
+    </button>
+    <button class="share-btn share-line" onclick="shareLine()" aria-label="LINEでシェア">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.03 2 11c0 3.45 1.98 6.48 5 8.23V22l2.83-1.83C10.5 20.38 11.24 20.5 12 20.5c5.52 0 10-4.03 10-9S17.52 2 12 2zm1 13.5h-2v-5h2v5zm0-7h-2V6.5h2V8.5z"/></svg>
+      LINEでシェア
+    </button>
+    <button class="share-btn" onclick="copyLink()" aria-label="リンクをコピー">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      リンクをコピー
+    </button>
+  </div>
+</header>
+
+<!-- CONTENT -->
+<div class="result-content" id="resultContent">
+
+  <!-- 特徴 -->
+  <section class="result-section" aria-labelledby="traitTitle">
+    <div class="result-section-title">Traits</div>
+    <div class="card" id="traitCard">
+      <h3 id="traitTitle">🔍 あなたの特徴</h3>
+      <p id="traitText"></p>
+    </div>
+  </section>
+
+  <!-- 恋愛パターン -->
+  <section class="result-section" aria-labelledby="patternTitle">
+    <div class="result-section-title">Love Pattern</div>
+    <div class="card" id="strengthCard">
+      <h3>💪 強み</h3>
+      <p id="strengthText"></p>
+    </div>
+    <div class="card" id="pitfallCard">
+      <h3>⚠️ 落とし穴</h3>
+      <p id="pitfallText"></p>
+    </div>
+  </section>
+
+  <!-- スコア -->
+  <section class="result-section" aria-labelledby="scoreTitle">
+    <div class="result-section-title">Score</div>
+    <div class="card">
+      <h3 id="scoreTitle">📊 あなたのスコア</h3>
+      <div class="score-bars" id="scoreBars" aria-label="各軸のスコア"></div>
+    </div>
+  </section>
+
+  <!-- 相性 -->
+  <section class="result-section" aria-labelledby="compatTitle">
+    <div class="result-section-title">Compatibility</div>
+    <div class="card">
+      <h3 id="compatTitle">💑 相性</h3>
+      <div class="compat-grid" id="compatGrid"></div>
+    </div>
+  </section>
+
+  <!-- アドバイス -->
+  <section class="result-section" aria-labelledby="adviceTitle">
+    <div class="result-section-title">Advice</div>
+    <div class="advice-box" role="note" aria-labelledby="adviceTitle">
+      <h3 id="adviceTitle" style="font-size:1rem;font-weight:700;margin-bottom:.6rem">💌 あなたへのアドバイス</h3>
+      <p id="adviceText"></p>
+    </div>
+  </section>
+
+  <!-- 他のタイプ -->
+  <section class="result-section" aria-labelledby="otherTitle">
+    <div class="result-section-title">All Types</div>
+    <h2 id="otherTitle" class="sr-only">すべてのタイプ</h2>
+    <div class="other-types-grid" id="otherTypesGrid"></div>
+  </section>
+
+  <!-- リトライ -->
+  <div class="retry-section">
+    <a href="quiz.html" class="btn-retry" onclick="return confirmRetry()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.35"/></svg>
+      もう一度診断する
+    </a>
+    <br>
+    <a href="lp.html" class="btn-lp">トップに戻る</a>
+  </div>
+
+</div>
+
+<!-- NOT FOUND (hidden by default) -->
+<div class="not-found" id="notFound" hidden>
+  <p style="font-size:2.5rem;margin-bottom:1rem">🔍</p>
+  <h2>結果が見つかりません</h2>
+  <p>診断を完了してから結果ページをご確認ください。</p>
+  <a href="quiz.html" class="btn-retry" style="display:inline-flex">診断を始める</a>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- SR ONLY UTILITY -->
+<style>.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}</style>
+
+<script>
+// ── TYPE DEFINITIONS ──────────────────────────────────────────
+const TYPES = {
+  SW: {
+    name: '言葉の守護者',
+    subtitle: '言葉で愛を紡ぐ、心の安定した表現者',
+    icon: '💬',
+    attachment: 'secure',
+    loveLanguage: 'words',
+    color: '#6B9EC9',
+    bg: '#EEF4FB',
+    attachLabel: '安定型',
+    llLabel: '言葉の言語',
+    traits: 'あなたは感情を言語化することが得意で、パートナーへの気持ちを言葉でしっかり伝えられます。「好き」「ありがとう」「助かった」といった言葉が自然と口をつき、相手に安心感を与えます。また相手からの言葉も素直に受け取れるため、言語的なコミュニケーションが豊かな関係を築けます。',
+    strength: 'パートナーとのすれ違いを言葉で解消できる力があります。感情の言語化が上手いため、誤解が生じても話し合いで関係を修復しやすく、長期的に安定した関係を維持できます。',
+    pitfall: '言葉を大切にするあまり、行動よりも「言ってくれること」を優先しすぎることがあります。愛の言語が異なるパートナーには、言葉よりも行動で示してほしいと感じる人もいることを忘れずに。',
+    bestMatch: ['SA', 'SC'],
+    careMatch: ['AA'],
+    advice: 'あなたの言葉の力は本物です。ただ、相手の「愛の言語」に合わせて、時には言葉だけでなく行動や存在で示すことも意識してみましょう。言葉×行動の組み合わせは最強です。',
+  },
+  SA: {
+    name: '行動の設計者',
+    subtitle: '愛を行動で示す、信頼の構築者',
+    icon: '🛠',
+    attachment: 'secure',
+    loveLanguage: 'acts',
+    color: '#5A9D6B',
+    bg: '#EEF6EE',
+    attachLabel: '安定型',
+    llLabel: '行為の言語',
+    traits: 'あなたにとって愛情とは「行動」で示すものです。言葉より先に動き、パートナーのために買い物を手伝ったり、体調が悪いときにそっとケアしたりと、日常の小さな行動で愛を伝えます。また相手のそうした気遣いにも敏感で、行動の中に愛を読み取る力があります。',
+    strength: '口約束より行動で信頼を積み上げていくため、長期的な関係ほど深い絆が生まれます。言葉が苦手なパートナーとも、行動を通じた心地よい関係を築けます。',
+    pitfall: '「察してもらえるはず」という思い込みから、言語的なコミュニケーションを省略しがちです。行動しているつもりが相手に伝わっていないケースもあるため、時には言葉で補足することが大切です。',
+    bestMatch: ['SW', 'ST'],
+    careMatch: ['AW'],
+    advice: 'あなたの行動力と思いやりは、パートナーの日常を確実に豊かにしています。ただ、行動と一言「あなたのためだよ」を添えると、伝わる力が2倍になります。',
+  },
+  ST: {
+    name: '時間の共有者',
+    subtitle: '共に過ごす時を最も大切にする、存在の愛情家',
+    icon: '🌅',
+    attachment: 'secure',
+    loveLanguage: 'time',
+    color: '#C9954A',
+    bg: '#FDF5E6',
+    attachLabel: '安定型',
+    llLabel: '時間の言語',
+    traits: 'あなたにとって最高の愛情表現は「一緒にいること」です。特別なデートより、何気ない週末を共に過ごすことに幸せを感じます。安定した愛着基盤があるため、パートナーとの時間を楽しみながらも、一人の時間もきちんと持てるバランス感覚があります。',
+    strength: '「ただそこにいる」ことで相手に安心感を与えます。特別なことをしなくても、存在そのものが愛情になるため、パートナーにとって心の安全基地のような存在になれます。',
+    pitfall: '共有時間を重視するあまり、パートナーが一人の時間や友人との時間を求めると「自分を大切にしてくれていない」と感じてしまうことがあります。',
+    bestMatch: ['SC', 'SA'],
+    careMatch: ['AT'],
+    advice: '一緒にいる時間の「質」をさらに大切にしましょう。スマホをしまって、今この瞬間にいるパートナーだけに集中する時間をつくることが、関係をより深めます。',
+  },
+  SC: {
+    name: 'ぬくもりの探求者',
+    subtitle: '体温で愛を確かめる、感覚に正直な人',
+    icon: '🤝',
+    attachment: 'secure',
+    loveLanguage: 'touch',
+    color: '#C96B4A',
+    bg: '#F5EAE4',
+    attachLabel: '安定型',
+    llLabel: '触れ合いの言語',
+    traits: 'あなたにとって愛は「感覚」で伝わるものです。手を繋ぐ、肩に触れる、ハグをする——そうした身体的な触れ合いの中に、言葉では表せない深い安心感と愛情を感じます。安定した愛着基盤があるため、スキンシップを過剰に求めるのではなく、自然な形で愛を確かめ合えます。',
+    strength: '身体的なコミュニケーションが豊かなため、言葉が少なくてもパートナーに安心感を与えられます。体調が悪いとき、落ち込んでいるときに寄り添う力が特に光ります。',
+    pitfall: '物理的な距離（遠距離恋愛・仕事で会えない時期など）で不安を感じやすくなります。また、スキンシップが苦手なパートナーとはすれ違いが生じることも。',
+    bestMatch: ['ST', 'SW'],
+    careMatch: ['AC'],
+    advice: '触れ合いの力を信じてください。ただし、相手のパーソナルスペースや好みも尊重しながら、お互いにとって心地よいスキンシップの形を見つけましょう。',
+  },
+  AW: {
+    name: '言葉の渇望者',
+    subtitle: '言葉で安心を求める、繊細な感受性の持ち主',
+    icon: '🌸',
+    attachment: 'anxious',
+    loveLanguage: 'words',
+    color: '#D4829A',
+    bg: '#FAF0F4',
+    attachLabel: '不安型',
+    llLabel: '言葉の言語',
+    traits: 'あなたはパートナーからの言葉に強く反応します。「好き」「大切にしてるよ」という言葉が聞けると深く安心し、逆に言葉が少ないと不安を感じやすくなります。感受性が豊かで、相手の一言に喜んだり傷ついたりする繊細さを持っています。',
+    strength: '感受性の高さから、相手の気持ちの変化に敏感です。パートナーが落ち込んでいるとき、言葉で深く共感できる力があります。言語的なコミュニケーションへの意識が高いため、話し合いを大切にする関係を作れます。',
+    pitfall: '言葉による確認・承認を求めすぎると、パートナーに負担をかけることがあります。「なぜ言ってくれないの」という不満が積もりやすいため、相手の愛の表現方法の違いを理解することが鍵です。',
+    bestMatch: ['SW', 'SA'],
+    careMatch: ['SC'],
+    advice: '言葉に価値を置くあなたの感性は素晴らしいものです。ただ、パートナーが行動や存在で愛を示しているとき、それを「言葉の代わり」として受け取る練習をしてみましょう。愛は一つの言語だけで伝わるものではありません。',
+  },
+  AA: {
+    name: '証明の求道者',
+    subtitle: '行動で愛を測る、真剣な愛の確認者',
+    icon: '🔍',
+    attachment: 'anxious',
+    loveLanguage: 'acts',
+    color: '#9B7EC9',
+    bg: '#F5F0F8',
+    attachLabel: '不安型',
+    llLabel: '行為の言語',
+    traits: 'あなたはパートナーの「行動」で愛を測ります。「してくれたかどうか」が愛情のバロメーターになりやすく、サプライズや日常の気遣い行動に深く喜びを感じます。一方で、期待した行動がなかったときに不安や寂しさを感じやすい面もあります。',
+    strength: 'パートナーへの行動力が高く、愛情を惜しみなく行動で注ぎます。「してあげること」への情熱が強いため、パートナーにとって頼もしい存在になれます。',
+    pitfall: '見返りを期待する気持ちが強まると、「こんなにしてあげているのに」という思いが積もりやすくなります。行動の見返りとして愛情を求めるサイクルに入らないよう注意が必要です。',
+    bestMatch: ['SA', 'SW'],
+    careMatch: ['ST'],
+    advice: 'あなたの行動力と深い愛情は本物です。ただ、「してもらえない」ことで愛を疑う前に、パートナーの愛の言語が何かを確認してみましょう。愛の表現は人それぞれです。',
+  },
+  AT: {
+    name: '密着の求道者',
+    subtitle: '一緒にいる時間に安心を求める、深い絆の追求者',
+    icon: '🌙',
+    attachment: 'anxious',
+    loveLanguage: 'time',
+    color: '#7E7EC9',
+    bg: '#F0F0F8',
+    attachLabel: '不安型',
+    llLabel: '時間の言語',
+    traits: 'あなたはパートナーと過ごす時間に深い安心感を求めます。一緒にいることで「自分は大切にされている」と感じ、逆にパートナーが自分より他のことを優先すると強い寂しさや不安を覚えます。深く愛している分、相手への期待も大きくなりやすいです。',
+    strength: 'パートナーとの時間を何より大切にするため、二人の関係を丁寧に育てる力があります。一緒にいることを喜んでくれるパートナーにとっては、これ以上ない愛情深い存在です。',
+    pitfall: '「一緒にいたい」気持ちが強まると、パートナーの個人時間や一人でいることへの要望を「拒絶」に感じてしまうことがあります。自立した時間の大切さを意識することが鍵です。',
+    bestMatch: ['ST', 'SC'],
+    careMatch: ['SW'],
+    advice: '一緒にいたいという気持ちは愛情そのものです。ただ、お互いが「自分の時間」を持てる関係こそが長続きします。パートナーの一人時間を応援できると、むしろ二人の絆は深まります。',
+  },
+  AC: {
+    name: '感覚の依存者',
+    subtitle: '触れ合いで心を満たす、感覚的な愛情の受け取り手',
+    icon: '💗',
+    attachment: 'anxious',
+    loveLanguage: 'touch',
+    color: '#D47A9A',
+    bg: '#FDF0F4',
+    attachLabel: '不安型',
+    llLabel: '触れ合いの言語',
+    traits: 'あなたはスキンシップによって愛情を強く実感します。手を繋ぐ、ハグをする、隣に座る——そうした身体的な接触が「愛されている」という確信につながります。スキンシップが少ない期間が続くと、愛情が薄れたのではないかと不安になりやすい面があります。',
+    strength: '身体的な愛情表現が豊かで、パートナーに安心感を与えることが得意です。落ち込んだ相手をそっと抱きしめる行動力が、関係に温かさをもたらします。',
+    pitfall: 'スキンシップへの依存が強まると、物理的に会えないとき（遠距離・仕事繁忙期）に強い不安を感じやすくなります。また、スキンシップが苦手なパートナーとは根本的な齟齬が生じることも。',
+    bestMatch: ['SC', 'ST'],
+    careMatch: ['SW'],
+    advice: '触れ合いの温かさを知っているあなたは、パートナーに本物の安心感を与えられます。ただ、言葉や時間でも愛を受け取れるよう受け取り方を広げると、どんな状況でも愛情を感じやすくなります。',
+  },
+};
+
+const ALL_TYPES_ORDER = ['SW','SA','ST','SC','AW','AA','AT','AC'];
+
+const AXIS_LABELS = {
+  attachment: '愛着（安定）',
+  words: '言葉の言語',
+  acts: '行為の言語',
+  time: '時間の言語',
+  touch: '触れ合いの言語',
+};
+
+const STORAGE_RESULT = 'aiknow_amatrica_result';
+
+// ── INIT ──────────────────────────────────────────────────────
+function init() {
+  const params = new URLSearchParams(window.location.search);
+  const typeParam = params.get('type');
+
+  let typeId = typeParam;
+  let normalized = null;
+
+  // ?type=XXX が指定されていない場合のみ localStorage を参照
+  if (!typeParam) {
+    try {
+      const saved = localStorage.getItem(STORAGE_RESULT);
+      if (saved) {
+        const data = JSON.parse(saved);
+        typeId = data.typeId;
+        normalized = data.normalized || null;
+      }
+    } catch (e) {}
+  } else {
+    // デモ用 URL param 指定時は自分のスコアも参照（あれば）
+    try {
+      const saved = localStorage.getItem(STORAGE_RESULT);
+      if (saved) {
+        const data = JSON.parse(saved);
+        normalized = data.normalized || null;
+      }
+    } catch (e) {}
+  }
+
+  if (!typeId || !TYPES[typeId]) {
+    document.getElementById('resultHero').hidden = true;
+    document.getElementById('resultContent').hidden = true;
+    document.getElementById('notFound').hidden = false;
+    return;
+  }
+
+  renderResult(typeId, normalized);
+}
+
+// ── RENDER ────────────────────────────────────────────────────
+function renderResult(typeId, normalized) {
+  const t = TYPES[typeId];
+
+  // Apply type colors
+  document.documentElement.style.setProperty('--type-color', t.color);
+  document.documentElement.style.setProperty('--type-bg', t.bg);
+
+  // Update OGP meta dynamically
+  document.title = `「${t.name}」でした | アマトリカ診断`;
+  document.querySelector('meta[name="description"]').content =
+    `${t.subtitle} — アマトリカ診断の結果ページ`;
+
+  // Hero
+  document.getElementById('typeEyebrow').textContent =
+    `${t.attachLabel} × ${t.llLabel}`;
+  document.getElementById('typeIconWrap').textContent = t.icon;
+  document.getElementById('typeName').textContent = t.name;
+  document.getElementById('typeSubtitle').textContent = t.subtitle;
+
+  document.getElementById('typeBadges').innerHTML = `
+    <span class="badge badge-attach">${t.attachLabel === '安定型' ? '🟢' : '🟡'} ${t.attachLabel}</span>
+    <span class="badge badge-ll">💝 ${t.llLabel}</span>
+  `;
+
+  // Traits
+  document.getElementById('traitText').textContent = t.traits;
+
+  // Love pattern
+  document.getElementById('strengthText').textContent = t.strength;
+  document.getElementById('pitfallText').textContent = t.pitfall;
+
+  // Score bars
+  renderScoreBars(normalized, typeId);
+
+  // Compatibility
+  renderCompatibility(t);
+
+  // Advice
+  document.getElementById('adviceText').textContent = t.advice;
+
+  // Other types
+  renderOtherTypes(typeId);
+}
+
+function renderScoreBars(normalized, typeId) {
+  const t = TYPES[typeId];
+  const container = document.getElementById('scoreBars');
+  container.innerHTML = '';
+
+  const axes = ['attachment', 'words', 'acts', 'time', 'touch'];
+  const highlights = { attachment: t.attachment === 'secure', [t.loveLanguage]: true };
+
+  for (const ax of axes) {
+    const pct = normalized ? Math.round(normalized[ax] * 100) : 50;
+    const isHighlight = highlights[ax];
+
+    const row = document.createElement('div');
+    row.className = 'score-row';
+    row.setAttribute('role', 'meter');
+    row.setAttribute('aria-label', `${AXIS_LABELS[ax]}: ${pct}%`);
+    row.setAttribute('aria-valuenow', pct);
+    row.setAttribute('aria-valuemin', 0);
+    row.setAttribute('aria-valuemax', 100);
+    row.innerHTML = `
+      <span class="score-label">${AXIS_LABELS[ax]}</span>
+      <div class="score-bar-bg">
+        <div class="score-bar-fill${isHighlight ? ' highlight' : ''}" style="width:0%" data-pct="${pct}"></div>
+      </div>
+      <span class="score-pct">${normalized ? pct + '%' : '—'}</span>
+    `;
+    container.appendChild(row);
+  }
+
+  // Animate bars after render
+  requestAnimationFrame(() => {
+    container.querySelectorAll('.score-bar-fill').forEach(bar => {
+      bar.style.width = bar.dataset.pct + '%';
+    });
+  });
+}
+
+function renderCompatibility(t) {
+  const grid = document.getElementById('compatGrid');
+  const bestNames = t.bestMatch.map(id => TYPES[id]?.name || id);
+  const careNames = t.careMatch.map(id => TYPES[id]?.name || id);
+
+  grid.innerHTML = `
+    <div class="compat-card compat-good">
+      <div class="compat-label">✅ 相性が良いタイプ</div>
+      <div class="compat-types">
+        ${t.bestMatch.map(id => `<a href="result.html?type=${id}" class="compat-chip">${TYPES[id]?.icon} ${TYPES[id]?.name}</a>`).join('')}
+      </div>
+    </div>
+    <div class="compat-card compat-care">
+      <div class="compat-label">⚠️ 注意が必要なタイプ</div>
+      <div class="compat-types">
+        ${t.careMatch.map(id => `<a href="result.html?type=${id}" class="compat-chip">${TYPES[id]?.icon} ${TYPES[id]?.name}</a>`).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderOtherTypes(currentId) {
+  const grid = document.getElementById('otherTypesGrid');
+  grid.innerHTML = '';
+
+  for (const id of ALL_TYPES_ORDER) {
+    const t2 = TYPES[id];
+    const isCurrent = id === currentId;
+    const a = document.createElement('a');
+    a.href = isCurrent ? '#' : `result.html?type=${id}`;
+    a.className = 'other-type-link' + (isCurrent ? ' current' : '');
+    a.setAttribute('aria-label', `${t2.name}${isCurrent ? '（あなたのタイプ）' : 'の結果を見る'}`);
+    if (isCurrent) a.setAttribute('aria-current', 'page');
+    a.innerHTML = `
+      <span class="other-type-icon" aria-hidden="true">${t2.icon}</span>
+      <div class="other-type-info">
+        <div class="other-type-badge">${t2.attachLabel} × ${t2.llLabel.replace('の言語','')}</div>
+        <div class="other-type-name">${t2.name}</div>
+      </div>
+    `;
+    grid.appendChild(a);
+  }
+}
+
+// ── SHARE ─────────────────────────────────────────────────────
+function getShareText() {
+  const params = new URLSearchParams(window.location.search);
+  const typeId = params.get('type') || (() => {
+    try { return JSON.parse(localStorage.getItem(STORAGE_RESULT) || '{}').typeId; } catch(e) { return ''; }
+  })();
+  const t = TYPES[typeId] || {};
+  return `私のアマトリカ診断の結果は【${t.name || '?'}】でした！\n${t.subtitle || ''}\n\n#アマトリカ診断 #愛の言語 #恋愛タイプ`;
+}
+
+function shareX() {
+  const text = encodeURIComponent(getShareText());
+  const url = encodeURIComponent(window.location.href);
+  window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank', 'noopener');
+}
+
+function shareLine() {
+  const text = encodeURIComponent(getShareText() + '\n' + window.location.href);
+  window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(getShareText())}`, '_blank', 'noopener');
+}
+
+function copyLink() {
+  const url = window.location.href;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).then(() => showToast('リンクをコピーしました ✓'));
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = url; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('リンクをコピーしました ✓');
+  }
+}
+
+// ── TOAST ─────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+// ── RETRY ─────────────────────────────────────────────────────
+function confirmRetry() {
+  if (confirm('診断をやり直しますか？現在の結果はリセットされます。')) {
+    try {
+      localStorage.removeItem(STORAGE_RESULT);
+      localStorage.removeItem('aiknow_amatrica_progress');
+    } catch (e) {}
+    window.location.href = 'quiz.html';
+    return false;
+  }
+  return false;
+}
+
+// ── START ─────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>

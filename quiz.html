@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>診断中 — アマトリカ診断</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FDF8F3;
+      --surface: #FFFFFF;
+      --text: #2D2420;
+      --text-muted: #7A6E6A;
+      --text-light: #A89892;
+      --border: #E8DDD8;
+      --accent: #C96B4A;
+      --accent-hover: #B55C3C;
+      --accent-light: #F5EAE4;
+      --accent-2: #D4829A;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --shadow-sm: 0 1px 4px rgba(45,36,32,.06);
+      --shadow-md: 0 4px 16px rgba(45,36,32,.10);
+      --font-sans: 'Noto Sans JP', sans-serif;
+      --font-en: 'Inter', sans-serif;
+      --transition: 200ms ease;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      display: flex; flex-direction: column;
+    }
+
+    /* HEADER */
+    .quiz-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 1.25rem;
+      position: sticky; top: 0; z-index: 50;
+    }
+    .quiz-header-inner {
+      max-width: 720px; margin: 0 auto;
+      display: flex; align-items: center; gap: 1rem; height: 52px;
+    }
+    .back-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border-radius: 999px;
+      background: var(--bg); border: 1px solid var(--border);
+      color: var(--text-muted); cursor: pointer;
+      transition: background var(--transition), color var(--transition);
+      flex-shrink: 0;
+    }
+    .back-btn:hover { background: var(--accent-light); color: var(--accent); }
+    .back-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .back-btn:disabled { opacity: .35; cursor: not-allowed; }
+    .progress-wrap { flex: 1; }
+    .progress-label {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: .35rem;
+    }
+    .progress-num {
+      font-family: var(--font-en); font-size: .75rem; font-weight: 600;
+      color: var(--text-muted);
+    }
+    .progress-pct {
+      font-family: var(--font-en); font-size: .75rem; font-weight: 700;
+      color: var(--accent);
+    }
+    .progress-bar-bg {
+      height: 6px; background: var(--border); border-radius: 999px; overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      border-radius: 999px;
+      transition: width 350ms cubic-bezier(.4,0,.2,1);
+      will-change: width;
+    }
+    .close-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border-radius: 999px;
+      background: transparent; border: none;
+      color: var(--text-light); cursor: pointer;
+      transition: color var(--transition);
+      flex-shrink: 0; text-decoration: none;
+    }
+    .close-btn:hover { color: var(--text-muted); }
+    .close-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    /* MAIN */
+    main {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-start;
+      padding: 2.5rem 1.25rem 6rem;
+    }
+    .question-area {
+      width: 100%; max-width: 640px;
+      animation: fadeUp 280ms ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .question-meta {
+      display: flex; align-items: center; gap: .5rem;
+      margin-bottom: 1.25rem;
+    }
+    .axis-chip {
+      font-family: var(--font-en); font-size: .65rem; font-weight: 700;
+      letter-spacing: .08em; text-transform: uppercase;
+      padding: .2rem .6rem; border-radius: 999px;
+    }
+    .axis-attachment { background: #EEF4FB; color: #6B9EC9; }
+    .axis-words     { background: #FAF0F4; color: #D4829A; }
+    .axis-acts      { background: #EEF6EE; color: #5A9D6B; }
+    .axis-time      { background: #FDF5E6; color: #C9954A; }
+    .axis-touch     { background: #FAEEE8; color: #C96B4A; }
+    .question-text {
+      font-size: clamp(1.1rem, 3.5vw, 1.35rem);
+      font-weight: 700; line-height: 1.55;
+      margin-bottom: 2.25rem;
+    }
+
+    /* LIKERT */
+    .likert-wrap { width: 100%; }
+    .likert-labels {
+      display: flex; justify-content: space-between;
+      font-size: .7rem; color: var(--text-light);
+      margin-bottom: .5rem; padding: 0 .1rem;
+    }
+    .likert-scale {
+      display: grid; grid-template-columns: repeat(7, 1fr);
+      gap: .4rem;
+    }
+    .likert-btn {
+      aspect-ratio: 1;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      border-radius: var(--radius-sm);
+      border: 2px solid var(--border);
+      background: var(--surface);
+      cursor: pointer;
+      transition: border-color var(--transition), background var(--transition), transform var(--transition);
+      position: relative; overflow: hidden;
+    }
+    .likert-btn:hover {
+      border-color: var(--accent); background: var(--accent-light);
+      transform: translateY(-2px);
+    }
+    .likert-btn:focus-visible {
+      outline: 3px solid var(--accent); outline-offset: 2px;
+    }
+    .likert-btn.selected {
+      border-color: var(--accent); background: var(--accent);
+      color: #fff; transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(201,107,74,.35);
+    }
+    .likert-num {
+      font-family: var(--font-en); font-size: clamp(.85rem, 2.5vw, 1.1rem);
+      font-weight: 700;
+    }
+    .likert-dot {
+      width: 5px; height: 5px; border-radius: 999px;
+      background: currentColor; opacity: .4; margin-top: 2px;
+    }
+    .likert-btn.selected .likert-dot { opacity: .7; background: rgba(255,255,255,.8); }
+    .likert-hint {
+      text-align: center; margin-top: 1rem;
+      font-size: .75rem; color: var(--text-light);
+      min-height: 1.2em;
+      transition: opacity var(--transition);
+    }
+
+    /* NAV BUTTONS */
+    .quiz-nav {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: rgba(253,248,243,.95);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--border);
+      padding: .85rem 1.25rem;
+      display: flex; justify-content: center;
+    }
+    .quiz-nav-inner {
+      width: 100%; max-width: 640px;
+      display: flex; justify-content: space-between; gap: 1rem;
+    }
+    .btn-back-q {
+      display: flex; align-items: center; gap: .4rem;
+      padding: .7rem 1.25rem; border-radius: 999px;
+      background: transparent; border: 1.5px solid var(--border);
+      color: var(--text-muted); font-size: .9rem; font-weight: 600;
+      cursor: pointer; transition: background var(--transition), border-color var(--transition);
+    }
+    .btn-back-q:hover { background: var(--bg); border-color: var(--text-light); }
+    .btn-back-q:disabled { opacity: .3; cursor: not-allowed; }
+    .btn-back-q:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .btn-next-q {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: .5rem;
+      padding: .7rem 1.25rem; border-radius: 999px;
+      background: var(--accent); border: none;
+      color: #fff; font-size: .95rem; font-weight: 700;
+      cursor: pointer; transition: background var(--transition), opacity var(--transition);
+    }
+    .btn-next-q:hover:not(:disabled) { background: var(--accent-hover); }
+    .btn-next-q:disabled { opacity: .4; cursor: not-allowed; }
+    .btn-next-q:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+    /* INTRO SCREEN */
+    .intro-screen {
+      width: 100%; max-width: 560px;
+      text-align: center; padding: 1rem 0 2rem;
+    }
+    .intro-icon {
+      font-size: 3.5rem; margin-bottom: 1.5rem;
+      display: block; animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .intro-icon { animation: none; }
+    }
+    .intro-screen h1 {
+      font-size: 1.6rem; font-weight: 700; margin-bottom: .75rem;
+    }
+    .intro-screen p { color: var(--text-muted); margin-bottom: 2rem; line-height: 1.7; }
+    .intro-meta {
+      display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+    .intro-meta-item {
+      display: flex; align-items: center; gap: .35rem;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: .4rem .75rem;
+      font-size: .8rem; color: var(--text-muted);
+    }
+    .btn-start {
+      display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+      background: var(--accent); color: #fff;
+      border: none; border-radius: 999px;
+      padding: .9rem 2.5rem; font-size: 1rem; font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(201,107,74,.35);
+      transition: background var(--transition), transform var(--transition);
+    }
+    .btn-start:hover { background: var(--accent-hover); transform: translateY(-2px); }
+    .btn-start:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+
+    /* COMPLETE SCREEN */
+    .complete-screen {
+      width: 100%; max-width: 480px; text-align: center;
+      animation: fadeUp 300ms ease both;
+    }
+    .complete-icon { font-size: 3.5rem; margin-bottom: 1.5rem; display: block; }
+    .complete-screen h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: .75rem; }
+    .complete-screen p { color: var(--text-muted); margin-bottom: 2rem; }
+    .btn-result {
+      display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+      background: var(--accent); color: #fff;
+      border: none; border-radius: 999px;
+      padding: .9rem 2.5rem; font-size: 1rem; font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(201,107,74,.35);
+      transition: background var(--transition), transform var(--transition);
+    }
+    .btn-result:hover { background: var(--accent-hover); transform: translateY(-2px); }
+    .btn-result:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+
+    /* SCREENS */
+    .screen { display: none; flex-direction: column; align-items: center; width: 100%; }
+    .screen.active { display: flex; }
+
+    /* BREAKPOINTS */
+    @media (min-width: 640px) {
+      .likert-scale { gap: .6rem; }
+      .likert-num { font-size: 1.1rem; }
+    }
+    @media (min-width: 720px) {
+      main { padding-top: 3.5rem; }
+      .question-text { font-size: 1.35rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="quiz-header" role="banner">
+  <div class="quiz-header-inner">
+    <button class="back-btn" id="headerBackBtn" aria-label="前の問題に戻る" onclick="goBack()" disabled>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <div class="progress-wrap" role="progressbar" aria-label="診断の進捗" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="progressBar">
+      <div class="progress-label">
+        <span class="progress-num" id="progressNum" aria-live="polite">0 / 20</span>
+        <span class="progress-pct" id="progressPct">0%</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+      </div>
+    </div>
+    <a class="close-btn" href="lp.html" aria-label="診断を終了してトップに戻る">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main id="mainArea">
+
+  <!-- INTRO -->
+  <div class="screen active" id="screenIntro" role="main" aria-label="診断開始画面">
+    <div class="intro-screen">
+      <span class="intro-icon" aria-hidden="true">💝</span>
+      <h1>アマトリカ診断</h1>
+      <p>20問の質問に正直に答えてください。<br>あなたの「愛し方」タイプを判定します。</p>
+      <div class="intro-meta">
+        <div class="intro-meta-item">📝 全20問</div>
+        <div class="intro-meta-item">⏱ 約3〜5分</div>
+        <div class="intro-meta-item">🔒 ブラウザ内で完結</div>
+      </div>
+      <p style="font-size:.8rem;color:var(--text-light);margin-bottom:1.5rem">
+        各質問は「1＝まったくあてはまらない」〜「7＝非常にあてはまる」の7段階で回答してください。
+      </p>
+      <button class="btn-start" onclick="startQuiz()" id="startBtn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 8 16 12 12 16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        診断を始める
+      </button>
+    </div>
+  </div>
+
+  <!-- QUESTION -->
+  <div class="screen" id="screenQuestion" role="main" aria-label="質問画面">
+    <div class="question-area">
+      <div class="question-meta">
+        <span class="axis-chip" id="axisChip" aria-hidden="true"></span>
+      </div>
+      <p class="question-text" id="questionText" aria-live="polite"></p>
+      <div class="likert-wrap" role="group" aria-labelledby="questionText">
+        <div class="likert-labels" aria-hidden="true">
+          <span>まったく<br>あてはまらない</span>
+          <span>非常に<br>あてはまる</span>
+        </div>
+        <div class="likert-scale" id="likertScale" role="radiogroup" aria-label="7段階評価"></div>
+        <p class="likert-hint" id="likertHint" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPLETE -->
+  <div class="screen" id="screenComplete" role="main" aria-label="診断完了画面">
+    <div class="complete-screen">
+      <span class="complete-icon" aria-hidden="true">✨</span>
+      <h2>診断が完了しました！</h2>
+      <p>あなたの「愛し方」タイプを分析しています…</p>
+      <button class="btn-result" onclick="goToResult()">
+        結果を見る
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </div>
+
+</main>
+
+<!-- BOTTOM NAV (quiz only) -->
+<div class="quiz-nav" id="quizNav" aria-label="質問ナビゲーション" hidden>
+  <div class="quiz-nav-inner">
+    <button class="btn-back-q" id="navBackBtn" onclick="goBack()" disabled aria-label="前の問題へ">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+      もどる
+    </button>
+    <button class="btn-next-q" id="navNextBtn" onclick="goNext()" disabled aria-label="次の問題へ">
+      つぎへ
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────
+const QUESTIONS = [
+  { id:'q01', axis:'attachment', text:'パートナーとの関係で、自分の気持ちや考えを素直に打ち明けられると感じる', weight:1.5, reversed:false, secondary:{axis:'words',weight:0.3} },
+  { id:'q02', axis:'words',      text:'パートナーから「好き」「ありがとう」などの言葉をかけてもらうと、強く愛情を実感できる', weight:1.2, reversed:false, secondary:{axis:'attachment',weight:0.3} },
+  { id:'q03', axis:'acts',       text:'パートナーが率先して行動や手助けで支えてくれると、愛情を感じる', weight:1.2, reversed:false, secondary:null },
+  { id:'q04', axis:'time',       text:'パートナーと一緒に過ごす時間こそが、最も大切な愛情表現だと思う', weight:1.2, reversed:false, secondary:{axis:'attachment',weight:0.3} },
+  { id:'q05', axis:'touch',      text:'パートナーとの身体的な触れ合い（手を繋ぐ・ハグなど）が、愛情を実感する大切な手段だ', weight:1.2, reversed:false, secondary:{axis:'attachment',weight:0.3} },
+  { id:'q06', axis:'words',      text:'愛情は言葉より行動で示すべきで、言葉だけでは物足りないと感じる', weight:1.0, reversed:true,  secondary:null },
+  { id:'q07', axis:'attachment', text:'パートナーからの返信が少し遅れるだけで、不安や焦りを感じてしまう', weight:1.5, reversed:true,  secondary:null },
+  { id:'q08', axis:'acts',       text:'特別なイベントより、日常の小さな気遣いや行動の方に、より深く愛情を感じる', weight:1.0, reversed:false, secondary:{axis:'time',weight:0.3} },
+  { id:'q09', axis:'time',       text:'パートナーが自分との予定よりも仕事や友人を優先すると、強い寂しさを覚える', weight:1.0, reversed:false, secondary:null },
+  { id:'q10', axis:'touch',      text:'スキンシップが少ない関係では、なんとなく距離感や物足りなさを感じてしまう', weight:1.0, reversed:false, secondary:null },
+  { id:'q11', axis:'words',      text:'パートナーへの感謝や愛情は、言葉でこまめに伝えるようにしている（またはそうしたいと思う）', weight:1.0, reversed:false, secondary:null },
+  { id:'q12', axis:'attachment', text:'一人の時間を持つことで気持ちがリセットされ、またパートナーに向き合えると感じる', weight:1.2, reversed:false, secondary:{axis:'time',weight:0.3} },
+  { id:'q13', axis:'acts',       text:'パートナーのために何かしてあげることが、自分にとっての主な愛情表現の形だ', weight:1.2, reversed:false, secondary:null },
+  { id:'q14', axis:'time',       text:'忙しい日でも、パートナーと2人きりでいる時間を意識的に確保しようとする', weight:1.0, reversed:false, secondary:{axis:'acts',weight:0.3} },
+  { id:'q15', axis:'touch',      text:'気分が落ち込んでいるとき、言葉よりも体に触れてもらう方が気持ちが楽になる', weight:1.2, reversed:false, secondary:null },
+  { id:'q16', axis:'words',      text:'パートナーとは言葉にしなくても察し合えるのが理想で、いちいち言葉で確認する必要は感じない', weight:1.0, reversed:true,  secondary:null },
+  { id:'q17', axis:'attachment', text:'相手が本当に自分のことを好きかどうか、何度も確認したくなることがある', weight:1.2, reversed:true,  secondary:null },
+  { id:'q18', axis:'acts',       text:'パートナーがサプライズや工夫を凝らした行動をしてくれると、特別な喜びを感じる', weight:1.0, reversed:false, secondary:{axis:'words',weight:0.3} },
+  { id:'q19', axis:'time',       text:'パートナーと「何もしない時間」をただ隣にいるだけで、十分に満足できる', weight:1.2, reversed:false, secondary:{axis:'touch',weight:0.3} },
+  { id:'q20', axis:'attachment', text:'恋愛においては、相手への信頼感は焦らず時間をかけて自然に育まれるものだと思う', weight:1.5, reversed:false, secondary:null },
+];
+
+const LIKERT_HINTS = [
+  '', // 0 = not selected
+  'まったくあてはまらない',
+  'あてはまらない',
+  'どちらかといえばあてはまらない',
+  'どちらともいえない',
+  'どちらかといえばあてはまる',
+  'あてはまる',
+  '非常にあてはまる',
+];
+
+const AXIS_LABELS = {
+  attachment: '愛着スタイル',
+  words: '言葉の言語',
+  acts: '行為の言語',
+  time: '時間の言語',
+  touch: '触れ合いの言語',
+};
+
+const STORAGE_PROGRESS = 'aiknow_amatrica_progress';
+const STORAGE_RESULT   = 'aiknow_amatrica_result';
+const TOTAL = QUESTIONS.length;
+
+// ── STATE ─────────────────────────────────────────────────────
+let currentIndex = 0;
+let answers = {}; // { q01: 4, ... }
+let phase = 'intro'; // intro | quiz | complete
+
+// ── INIT ──────────────────────────────────────────────────────
+function init() {
+  try {
+    const saved = localStorage.getItem(STORAGE_PROGRESS);
+    if (saved) {
+      const data = JSON.parse(saved);
+      answers = data.answers || {};
+      const answeredCount = Object.keys(answers).length;
+      if (answeredCount > 0 && answeredCount < TOTAL) {
+        // Resume in-progress
+        currentIndex = data.currentIndex || 0;
+        // Clamp to a valid answered index
+        while (currentIndex > 0 && !answers[QUESTIONS[currentIndex - 1].id]) currentIndex--;
+        startQuiz(true);
+        return;
+      }
+    }
+  } catch (e) {}
+}
+
+// ── SCREENS ───────────────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ── START ─────────────────────────────────────────────────────
+function startQuiz(resume = false) {
+  phase = 'quiz';
+  showScreen('screenQuestion');
+  document.getElementById('quizNav').hidden = false;
+  if (!resume) {
+    answers = {};
+    currentIndex = 0;
+  }
+  renderQuestion();
+}
+
+// ── RENDER ────────────────────────────────────────────────────
+function renderQuestion() {
+  const q = QUESTIONS[currentIndex];
+  const answered = answers[q.id];
+
+  // Axis chip
+  const chip = document.getElementById('axisChip');
+  chip.textContent = AXIS_LABELS[q.axis];
+  chip.className = `axis-chip axis-${q.axis}`;
+
+  // Question text
+  document.getElementById('questionText').textContent = `Q${currentIndex + 1}. ${q.text}`;
+
+  // Progress
+  const pct = Math.round((currentIndex / TOTAL) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressNum').textContent = `${currentIndex} / ${TOTAL}`;
+  document.getElementById('progressPct').textContent = pct + '%';
+  document.getElementById('progressBar').setAttribute('aria-valuenow', pct);
+
+  // Header back btn
+  const hbb = document.getElementById('headerBackBtn');
+  hbb.disabled = currentIndex === 0;
+
+  // Likert
+  const scale = document.getElementById('likertScale');
+  scale.innerHTML = '';
+  for (let v = 1; v <= 7; v++) {
+    const btn = document.createElement('button');
+    btn.className = 'likert-btn' + (answered === v ? ' selected' : '');
+    btn.setAttribute('role', 'radio');
+    btn.setAttribute('aria-checked', answered === v ? 'true' : 'false');
+    btn.setAttribute('aria-label', `${v} — ${LIKERT_HINTS[v]}`);
+    btn.innerHTML = `<span class="likert-num">${v}</span><span class="likert-dot"></span>`;
+    btn.addEventListener('click', () => selectAnswer(v));
+    btn.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' && v < 7) scale.children[v].focus();
+      if (e.key === 'ArrowLeft'  && v > 1) scale.children[v - 2].focus();
+    });
+    scale.appendChild(btn);
+  }
+
+  // Hint
+  document.getElementById('likertHint').textContent = answered ? LIKERT_HINTS[answered] : 'タップして選んでください';
+
+  // Nav buttons
+  document.getElementById('navBackBtn').disabled = currentIndex === 0;
+  document.getElementById('navNextBtn').disabled = !answered;
+  document.getElementById('navNextBtn').textContent =
+    currentIndex === TOTAL - 1 ? '結果を見る' : 'つぎへ';
+
+  // Animation
+  const area = document.getElementById('screenQuestion').querySelector('.question-area');
+  area.style.animation = 'none';
+  area.offsetHeight; // reflow
+  area.style.animation = '';
+}
+
+// ── ANSWER ────────────────────────────────────────────────────
+function selectAnswer(value) {
+  const q = QUESTIONS[currentIndex];
+  answers[q.id] = value;
+  saveProgress();
+
+  // Update UI immediately
+  document.querySelectorAll('.likert-btn').forEach((btn, i) => {
+    const selected = (i + 1) === value;
+    btn.classList.toggle('selected', selected);
+    btn.setAttribute('aria-checked', selected ? 'true' : 'false');
+  });
+  document.getElementById('likertHint').textContent = LIKERT_HINTS[value];
+  document.getElementById('navNextBtn').disabled = false;
+
+  // Auto-advance
+  const delay = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 50 : 380;
+  setTimeout(() => goNext(), delay);
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────
+function goNext() {
+  if (!answers[QUESTIONS[currentIndex].id]) return;
+  if (currentIndex === TOTAL - 1) {
+    finishQuiz();
+    return;
+  }
+  currentIndex++;
+  saveProgress();
+  renderQuestion();
+}
+
+function goBack() {
+  if (currentIndex === 0) return;
+  currentIndex--;
+  saveProgress();
+  if (phase === 'quiz') renderQuestion();
+}
+
+// ── SAVE ──────────────────────────────────────────────────────
+function saveProgress() {
+  try {
+    localStorage.setItem(STORAGE_PROGRESS, JSON.stringify({
+      answers,
+      currentIndex,
+      savedAt: new Date().toISOString(),
+    }));
+  } catch (e) {}
+}
+
+// ── CALCULATE ─────────────────────────────────────────────────
+function calculateResult() {
+  const scores = { attachment:0, words:0, acts:0, time:0, touch:0 };
+  const maxes  = { attachment:0, words:0, acts:0, time:0, touch:0 };
+
+  for (const q of QUESTIONS) {
+    const raw = answers[q.id] ?? 4;
+    const effective = q.reversed ? (8 - raw) : raw;
+
+    scores[q.axis] += effective * q.weight;
+    maxes[q.axis]  += 7 * q.weight;
+
+    if (q.secondary) {
+      scores[q.secondary.axis] += effective * q.secondary.weight;
+      maxes[q.secondary.axis]  += 7 * q.secondary.weight;
+    }
+  }
+
+  const norm = {};
+  for (const ax of Object.keys(scores)) {
+    norm[ax] = maxes[ax] > 0 ? scores[ax] / maxes[ax] : 0;
+  }
+
+  const attachmentType = norm.attachment >= 0.5 ? 'secure' : 'anxious';
+
+  const llAxes = ['words', 'acts', 'time', 'touch'];
+  const primaryLL = llAxes.reduce((a, b) => norm[a] >= norm[b] ? a : b);
+
+  const typeMap = {
+    secure_words:'SW', secure_acts:'SA', secure_time:'ST', secure_touch:'SC',
+    anxious_words:'AW', anxious_acts:'AA', anxious_time:'AT', anxious_touch:'AC',
+  };
+
+  return {
+    typeId: typeMap[`${attachmentType}_${primaryLL}`],
+    attachmentType,
+    primaryLL,
+    scores,
+    normalized: norm,
+  };
+}
+
+// ── FINISH ────────────────────────────────────────────────────
+function finishQuiz() {
+  phase = 'complete';
+  const result = calculateResult();
+
+  try {
+    localStorage.setItem(STORAGE_RESULT, JSON.stringify({
+      ...result,
+      completedAt: new Date().toISOString(),
+      version: 1,
+    }));
+    // Clear in-progress
+    localStorage.removeItem(STORAGE_PROGRESS);
+  } catch (e) {}
+
+  document.getElementById('quizNav').hidden = true;
+  showScreen('screenComplete');
+}
+
+function goToResult() {
+  try {
+    const saved = localStorage.getItem(STORAGE_RESULT);
+    if (saved) {
+      const r = JSON.parse(saved);
+      window.location.href = `result.html?type=${r.typeId}`;
+    }
+  } catch (e) {
+    window.location.href = 'result.html';
+  }
+}
+
+// ── START ─────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
