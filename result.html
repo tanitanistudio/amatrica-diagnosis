@@ -197,15 +197,20 @@
     .compat-label { font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
     .compat-good .compat-label { color: #4A9B5C; }
     .compat-care .compat-label { color: #C97B4A; }
-    .compat-types { display: flex; flex-wrap: wrap; gap: .35rem; }
+    .compat-types { display: flex; flex-wrap: wrap; gap: .6rem; }
     .compat-chip {
-      font-size: .78rem; font-weight: 600; padding: .25rem .6rem;
+      display: flex; align-items: center; gap: .5rem;
+      font-size: .8rem; font-weight: 600; padding: .35rem .75rem .35rem .35rem;
       border-radius: 999px; background: rgba(255,255,255,.7);
       border: 1px solid rgba(0,0,0,.08); color: var(--text);
       text-decoration: none;
       transition: var(--transition);
     }
-    .compat-chip:hover { background: var(--surface); box-shadow: var(--shadow-sm); }
+    .compat-chip:hover { background: var(--surface); box-shadow: var(--shadow-sm); transform: translateY(-1px); }
+    .compat-chip-thumb {
+      width: 36px; height: 36px; border-radius: 999px;
+      object-fit: cover; flex-shrink: 0; background: var(--bg);
+    }
 
     /* ADVICE */
     .advice-box {
@@ -726,7 +731,10 @@ function renderCompatibility(typeId) {
   const careMatch = getCareMatches(typeId);
 
   const chip = id => TYPES[id]
-    ? `<a href="result.html?type=${id}" class="compat-chip">${TYPES[id].name}（${id}）</a>`
+    ? `<a href="result.html?type=${id}" class="compat-chip">
+        <img class="compat-chip-thumb" src="${TYPES[id].image}" alt="" loading="lazy">
+        ${TYPES[id].name}（${id}）
+      </a>`
     : '';
 
   grid.innerHTML = `

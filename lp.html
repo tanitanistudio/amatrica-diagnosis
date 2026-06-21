@@ -116,9 +116,8 @@
       white-space: nowrap; will-change: transform;
     }
     .hero-marquee-row img {
-      width: 96px; height: 96px; border-radius: 22px;
+      width: 140px; height: 140px; border-radius: 26px;
       object-fit: cover; flex-shrink: 0;
-      box-shadow: 0 4px 14px rgba(45,36,32,.10);
     }
     .hero-marquee-row.row-1 { top: 2%;  animation: marqueeLeft 52s linear infinite; }
     .hero-marquee-row.row-2 { top: 38%; animation: marqueeRight 64s linear infinite; }
@@ -617,22 +616,36 @@
   function renderHeroMarquee() {
     const container = document.getElementById('heroMarquee');
     if (!container) return;
+    container.innerHTML = '';
 
     const ids = Object.keys(CHARACTERS);
     // 24体を3行に分割（8体ずつ）
-    const rows = [ids.slice(0, 8), ids.slice(8, 16), ids.slice(16, 24)];
+    const groups = [ids.slice(0, 8), ids.slice(8, 16), ids.slice(16, 24)];
 
-    rows.forEach((rowIds, i) => {
+    // 画面幅に余白ができないよう、1行分の画像幅×個数が画面幅の2倍以上になるまで繰り返す
+    const IMG_SIZE = 140, GAP = 16; // CSSの .hero-marquee-row img / gap と一致させる
+    const groupWidth = groups[0].length * (IMG_SIZE + GAP);
+    const targetWidth = Math.max(window.innerWidth * 2, 2400);
+    const repeats = Math.max(2, Math.ceil(targetWidth / groupWidth));
+
+    groups.forEach((groupIds, i) => {
       const row = document.createElement('div');
       row.className = `hero-marquee-row row-${i + 1}`;
-      // シームレスループのため同じ並びを2回繰り出す
-      const imgsHtml = [...rowIds, ...rowIds]
+      let sequence = [];
+      for (let r = 0; r < repeats; r++) sequence.push(...groupIds);
+      // シームレスループのため、同じ並びをもう一度繰り出す（translateX(-50%)で一周）
+      const imgsHtml = [...sequence, ...sequence]
         .map(id => `<img src="img/${id}.png" alt="" loading="lazy">`)
         .join('');
       row.innerHTML = imgsHtml;
       container.appendChild(row);
     });
   }
+
+  window.addEventListener('resize', () => {
+    clearTimeout(window.__heroMarqueeResizeTimer);
+    window.__heroMarqueeResizeTimer = setTimeout(renderHeroMarquee, 300);
+  });
 
   renderHeroMarquee();
 
