@@ -163,33 +163,42 @@
     .feature-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: .5rem; }
     .feature-card p { font-size: .9rem; color: var(--text-muted); line-height: 1.65; }
 
-    /* TYPES */
+    /* TYPES（キャラクター紹介） */
     .types { background: var(--surface-2); }
-    .types-grid {
+    .char-group { margin-bottom: 2.5rem; }
+    .char-group:last-child { margin-bottom: 0; }
+    .char-group-header {
+      display: flex; align-items: center; gap: .6rem; margin-bottom: 1rem;
+    }
+    .char-group-dot {
+      width: 10px; height: 10px; border-radius: 999px; flex-shrink: 0;
+    }
+    .char-group-title { font-size: 1rem; font-weight: 700; }
+    .char-group-desc { font-size: .8rem; color: var(--text-muted); }
+    .char-grid {
       display: grid; gap: 1rem;
       grid-template-columns: repeat(2, 1fr);
     }
-    .type-card {
-      background: var(--surface); border-radius: var(--radius-md);
-      padding: 1.1rem 1rem; border: 1px solid var(--border);
-      display: flex; align-items: flex-start; gap: .75rem;
+    .char-card {
+      background: var(--surface); border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      display: flex; flex-direction: column;
       transition: transform var(--transition), box-shadow var(--transition);
       text-decoration: none; color: inherit;
     }
-    .type-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
-    .type-icon {
-      width: 40px; height: 40px; border-radius: var(--radius-sm);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.2rem; flex-shrink: 0;
+    .char-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+    .char-card-img {
+      width: 100%; aspect-ratio: 1; object-fit: cover; display: block;
+      background: var(--bg);
     }
-    .type-card-info { min-width: 0; }
-    .type-badge {
-      font-family: var(--font-en); font-size: .65rem; font-weight: 600;
-      letter-spacing: .06em; text-transform: uppercase;
-      margin-bottom: .25rem;
+    .char-card-body { padding: .85rem .9rem 1rem; }
+    .char-card-code {
+      font-family: var(--font-en); font-size: .62rem; font-weight: 700;
+      letter-spacing: .08em;
     }
-    .type-name { font-size: .9rem; font-weight: 700; }
-    .type-catch { font-size: .75rem; color: var(--text-muted); margin-top: .2rem; }
+    .char-card-name { font-size: .95rem; font-weight: 700; margin: .2rem 0 .35rem; }
+    .char-card-catch { font-size: .76rem; color: var(--text-muted); line-height: 1.5; }
 
     /* PERSONA */
     .persona-cards { display: grid; gap: 1rem; }
@@ -294,7 +303,10 @@
       .persona-cards { grid-template-columns: repeat(3, 1fr); }
     }
     @media (min-width: 720px) {
-      .types-grid { grid-template-columns: repeat(4, 1fr); }
+      .char-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (min-width: 1080px) {
+      .char-grid { grid-template-columns: repeat(6, 1fr); }
     }
     @media (min-width: 1080px) {
       .hero { padding: 7rem 1.25rem 5rem; }
@@ -324,7 +336,7 @@
 <header class="hero">
   <div class="hero-badge" aria-label="新着診断">✨ 新登場</div>
   <h1 class="hero-title">あなたの<em>「愛し方」</em>を<br>知っていますか？</h1>
-  <p class="hero-sub">心理学が明かす、あなただけの「愛の言語」。<br>愛着スタイル×愛の言語で8タイプを判定します。</p>
+  <p class="hero-sub">あなたの「恋し方」を、24人のキャラクターで診断。<br>ときめき・理解・献身・安心、4つの要素の優先順位で導き出す本格診断。</p>
   <div class="hero-cta-group">
     <a href="quiz.html" class="btn-primary">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 8 16 12 12 16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
@@ -333,7 +345,7 @@
     <div class="hero-meta" aria-label="診断の概要">
       <span>⏱ 約3〜5分</span>
       <span>📝 全20問</span>
-      <span>🎯 8タイプ</span>
+      <span>🎯 24タイプ</span>
       <span>🔒 登録不要</span>
     </div>
   </div>
@@ -353,8 +365,8 @@
       </div>
       <div class="feature-card">
         <div class="feature-icon" aria-hidden="true">🧩</div>
-        <h3>複合8タイプ判定</h3>
-        <p>愛着スタイル（安定型／不安型）×主要な愛の言語（4種）の掛け合わせで、あなただけのタイプを特定します。</p>
+        <h3>24キャラクター診断</h3>
+        <p>ときめき・理解会話・献身・安心信頼、4つの要素の優先順位の組み合わせで、24人のキャラクターからあなたのタイプを特定します。</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon" aria-hidden="true">💑</div>
@@ -365,80 +377,15 @@
   </div>
 </section>
 
-<!-- TYPES -->
+<!-- TYPES（24キャラクター紹介） -->
 <section class="types" aria-labelledby="typesTitle">
   <div class="section-inner">
-    <div class="section-label">Types</div>
-    <h2 class="section-title" id="typesTitle">8つの「愛し方」タイプ</h2>
-    <p class="section-lead">あなたはどのタイプ？診断して確かめてみよう。</p>
-    <div class="types-grid">
-      <a href="result.html?type=SW" class="type-card" aria-label="言葉の守護者タイプの詳細を見る">
-        <div class="type-icon" style="background:#EEF4FB" aria-hidden="true">💬</div>
-        <div class="type-card-info">
-          <div class="type-badge" style="color:#6B9EC9">安定 × 言葉</div>
-          <div class="type-name">言葉の守護者</div>
-          <div class="type-catch">言葉で愛を育てる</div>
-        </div>
-      </a>
-      <a href="result.html?type=SA" class="type-card" aria-label="行動の設計者タイプの詳細を見る">
-        <div class="type-icon" style="background:#EEF6EE" aria-hidden="true">🛠</div>
-        <div class="type-card-info">
-          <div class="type-badge" style="color:#5A9D6B">安定 × 行為</div>
-          <div class="type-name">行動の設計者</div>
-          <div class="type-catch">愛を行動で示す</div>
-        </div>
-      </a>
-      <a href="result.html?type=ST" class="type-card" aria-label="時間の共有者タイプの詳細を見る">
-        <div class="type-icon" style="background:#FDF5E6" aria-hidden="true">🌅</div>
-        <div class="type-card-info">
-          <div class="type-badge" style="color:#C9954A">安定 × 時間</div>
-          <div class="type-name">時間の共有者</div>
-          <div class="type-catch">共に過ごす時を大切に</div>
-        </div>
-      </a>
-      <a href="result.html?type=SC" class="type-card" aria-label="ぬくもりの探求者タイプの詳細を見る">
-        <div class="type-icon" style="background:#FAEEE8" aria-hidden="true">🤝</div>
-        <div class="type-card-info">
-          <div class="type-badge" style="color:#C96B4A">安定 × 触れ合い</div>
-          <div class="type-name">ぬくもりの探求者</div>
-          <div class="type-catch">体温で愛を確かめる</div>
-        </div>
-      </a>
-      <a href="result.html?type=AW" class="type-card" aria-label="言葉の渇望者タイプの詳細を見る">
-        <div class="type-icon" style="background:#FAF0F4" aria-hidden="true">🌸</div>
-        <div class="type-card-info">
-          <div class="type-badge" style="color:#D4829A">不安 × 言葉</div>
-          <div class="type-name">言葉の渇望者</div>
-          <div class="type-catch">言葉で安心を求める</div>
-        </div>
-      </a>
-      <a href="result.html?type=AA" class="type-card" aria-label="証明の求道者タイプの詳細を見る">
-        <div class="type-icon" style="background:#F5F0F8" aria-hidden="true">🔍</div>
-        <div class="type-card-info">
-          <div class="type-badge" style="color:#9B7EC9">不安 × 行為</div>
-          <div class="type-name">証明の求道者</div>
-          <div class="type-catch">行動で愛を測る</div>
-        </div>
-      </a>
-      <a href="result.html?type=AT" class="type-card" aria-label="密着の求道者タイプの詳細を見る">
-        <div class="type-icon" style="background:#F0F0F8" aria-hidden="true">🌙</div>
-        <div class="type-card-info">
-          <div class="type-badge" style="color:#7E7EC9">不安 × 時間</div>
-          <div class="type-name">密着の求道者</div>
-          <div class="type-catch">一緒にいる時間に安心</div>
-        </div>
-      </a>
-      <a href="result.html?type=AC" class="type-card" aria-label="感覚の依存者タイプの詳細を見る">
-        <div class="type-icon" style="background:#FDF0F4" aria-hidden="true">💗</div>
-        <div class="type-card-info">
-          <div class="type-badge" style="color:#D47A9A">不安 × 触れ合い</div>
-          <div class="type-name">感覚の依存者</div>
-          <div class="type-catch">触れ合いで心が満たされる</div>
-        </div>
-      </a>
-    </div>
+    <div class="section-label">Characters</div>
+    <h2 class="section-title" id="typesTitle">24人の「恋し方」キャラクター</h2>
+    <p class="section-lead">ときめき（E）・理解会話（F）・献身（A）・安心信頼（S）、4つの要素の優先順位の組み合わせで24タイプに分類。あなたはどのキャラクター？</p>
+    <div id="charGroups"></div>
     <div style="text-align:center;margin-top:2rem">
-      <a href="quiz.html" class="btn-primary">診断してタイプを知る</a>
+      <a href="quiz.html" class="btn-primary">診断してキャラクターを知る</a>
     </div>
   </div>
 </section>
@@ -535,6 +482,84 @@
 </footer>
 
 <script>
+  // ── 24キャラクターデータ ─────────────────────────────────
+  const GROUPS = {
+    E: { label: '恋に火がつきやすい、ときめき主導タイプ', color: '#D4607A', bg: '#FBEAEE' },
+    F: { label: '理解・会話・心の接続を重視するタイプ',     color: '#6B8FC9', bg: '#EBF0FA' },
+    A: { label: '愛すると深く尽くしやすい、献身タイプ',       color: '#5FA86B', bg: '#EDF7EE' },
+    S: { label: '安心・信頼・つながりを育てるタイプ',         color: '#C9954A', bg: '#FDF5E6' },
+  };
+  const CHARACTERS = {
+    EFAS: '恋愛脳探偵|好きになると、恋の謎まで解きたくなる。',
+    EFSA: 'トキメキ通訳|このドキドキ、ちゃんと言葉にしたい。',
+    EAFS: '一途ナイト|好きになった瞬間から、もう守る側。',
+    EASF: '赤い糸ジャンキー|ただの恋じゃ足りない、運命であってほしい。',
+    ESFA: '恋するこたつ|恋もしたいけど、最後はほっとしたい。',
+    ESAF: '日常ロマンサー|何でもない毎日を、恋で特別にしてしまう。',
+    FEAS: '沼トーカー|話してるだけで、気づけば心に住みついてる。',
+    FESA: '恋愛参謀|恋も人間関係も、感情だけでは動かない。',
+    FAES: '心読み探偵|その一言の裏にある本音まで見逃さない。',
+    FASE: '感情レスキュー|傷ついた心を見ると、助けずにいられない。',
+    FSEA: '親友ラバー|恋より先に、"いちばん話せる人"になりたい。',
+    FSAE: '安心ブレーン|好きな人の人生まで、つい一緒に考えてしまう。',
+    AEFS: 'つくし天使|愛した瞬間、自分のことは後回し。',
+    AESF: '愛しすぎ聖者|我慢してるのに、それすら愛だと思ってしまう。',
+    AFES: '共感ナース|好きな人の痛みを、自分のことみたいに感じる。',
+    AFSE: 'メンタル番犬|大事な人の心は、私がずっと守っていたい。',
+    ASEF: 'おかえり守護神|どんな日も、"帰れる場所"でありたい。',
+    ASFE: '世話焼きエンジェル|愛情は、やさしさと面倒見のよさで伝わる。',
+    SEFA: '実家ラバー|一緒にいるだけで、なぜか心がほどけていく。',
+    SEAF: '平和番長|ドキドキより、穏やかに続く恋がいちばん強い。',
+    SFEA: 'ぬくもり通訳|言葉にしなくても、やさしさはちゃんと伝わる。',
+    SFAE: '相談ホイホイ|気づけばみんなの本音が、ここに集まってくる。',
+    SAEF: '身内モンスター|好きになるほど、もう他人ではいられない。',
+    SAFE: '最後の味方|どんなときでも、最後まであなたの側にいる。',
+  };
+
+  function renderCharacterGroups() {
+    const container = document.getElementById('charGroups');
+    if (!container) return;
+    container.innerHTML = '';
+
+    for (const lead of ['E', 'F', 'A', 'S']) {
+      const g = GROUPS[lead];
+      const groupEl = document.createElement('div');
+      groupEl.className = 'char-group';
+      groupEl.innerHTML = `
+        <div class="char-group-header">
+          <span class="char-group-dot" style="background:${g.color}"></span>
+          <span class="char-group-title">${lead}始まり6タイプ</span>
+        </div>
+        <p class="char-group-desc" style="margin-bottom:.85rem">${g.label}</p>
+      `;
+      const grid = document.createElement('div');
+      grid.className = 'char-grid';
+
+      for (const [id, data] of Object.entries(CHARACTERS)) {
+        if (id[0] !== lead) continue;
+        const [name, catchphrase] = data.split('|');
+        const a = document.createElement('a');
+        a.href = `result.html?type=${id}`;
+        a.className = 'char-card';
+        a.setAttribute('aria-label', `${name}（${id}）の詳細を見る`);
+        a.innerHTML = `
+          <img class="char-card-img" src="img/${id}.png" alt="${name}のキャラクター画像" loading="lazy">
+          <div class="char-card-body">
+            <div class="char-card-code" style="color:${g.color}">${id}</div>
+            <div class="char-card-name">${name}</div>
+            <div class="char-card-catch">${catchphrase}</div>
+          </div>
+        `;
+        grid.appendChild(a);
+      }
+
+      groupEl.appendChild(grid);
+      container.appendChild(groupEl);
+    }
+  }
+
+  renderCharacterGroups();
+
   const PROGRESS_KEY = 'aiknow_amatrica_progress';
   const RESULT_KEY = 'aiknow_amatrica_result';
 

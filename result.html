@@ -77,16 +77,25 @@
       color: var(--type-color); margin-bottom: .75rem;
     }
     .type-icon-wrap {
-      width: 88px; height: 88px; border-radius: 999px;
-      background: var(--type-bg); border: 3px solid var(--type-color);
+      width: 168px; height: 168px; border-radius: var(--radius-xl);
+      background: var(--type-bg); border: 4px solid var(--type-color);
       display: flex; align-items: center; justify-content: center;
-      font-size: 2.5rem; margin: 0 auto 1.25rem;
-      box-shadow: 0 0 0 6px rgba(255,255,255,.8), 0 8px 24px rgba(0,0,0,.08);
+      overflow: hidden;
+      margin: 0 auto 1.25rem;
+      box-shadow: 0 0 0 6px rgba(255,255,255,.8), 0 12px 32px rgba(0,0,0,.12);
       animation: popIn 400ms cubic-bezier(.34,1.56,.64,1) both;
+    }
+    .type-icon-wrap img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
     }
     @keyframes popIn {
       from { opacity: 0; transform: scale(.7); }
       to   { opacity: 1; transform: scale(1); }
+    }
+    .type-code {
+      font-family: var(--font-en); font-size: .8rem; font-weight: 700;
+      letter-spacing: .2em; color: var(--type-color);
+      margin-bottom: .35rem;
     }
     .type-name {
       font-size: clamp(1.6rem, 5vw, 2.2rem); font-weight: 700;
@@ -186,21 +195,29 @@
     .advice-box p { font-size: .92rem; line-height: 1.8; color: var(--text); font-weight: 500; }
 
     /* OTHER TYPES */
+    .other-group { margin-bottom: 1.25rem; }
+    .other-group-label {
+      font-size: .72rem; font-weight: 700; color: var(--text-light);
+      margin-bottom: .5rem; display: flex; align-items: center; gap: .4rem;
+    }
     .other-types-grid {
       display: grid; grid-template-columns: repeat(2, 1fr); gap: .6rem;
     }
     .other-type-link {
       display: flex; align-items: center; gap: .6rem;
       background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md);
-      padding: .75rem .85rem; text-decoration: none; color: var(--text);
+      padding: .6rem .75rem; text-decoration: none; color: var(--text);
       transition: var(--transition);
     }
     .other-type-link:hover { border-color: var(--accent); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
     .other-type-link.current { border-color: var(--type-color); background: var(--type-bg); pointer-events: none; }
-    .other-type-icon { font-size: 1.3rem; flex-shrink: 0; }
+    .other-type-thumb {
+      width: 38px; height: 38px; border-radius: var(--radius-sm);
+      object-fit: cover; flex-shrink: 0; background: var(--bg);
+    }
     .other-type-info { min-width: 0; }
-    .other-type-badge { font-size: .6rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--text-light); font-family: var(--font-en); }
-    .other-type-name { font-size: .85rem; font-weight: 700; }
+    .other-type-badge { font-size: .58rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--text-light); font-family: var(--font-en); }
+    .other-type-name { font-size: .82rem; font-weight: 700; }
 
     /* RETRY */
     .retry-section { text-align: center; margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid var(--border); }
@@ -265,6 +282,7 @@
 <header class="result-hero" id="resultHero" role="banner">
   <div class="type-eyebrow" id="typeEyebrow"></div>
   <div class="type-icon-wrap" id="typeIconWrap" aria-hidden="true"></div>
+  <div class="type-code" id="typeCode"></div>
   <h1 class="type-name" id="typeName"></h1>
   <p class="type-subtitle" id="typeSubtitle"></p>
   <div class="type-badges" id="typeBadges"></div>
@@ -370,157 +388,178 @@
 <style>.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}</style>
 
 <script>
-// ── TYPE DEFINITIONS ──────────────────────────────────────────
-const TYPES = {
-  SW: {
-    name: '言葉の守護者',
-    subtitle: '言葉で愛を紡ぐ、心の安定した表現者',
-    icon: '💬',
-    attachment: 'secure',
-    loveLanguage: 'words',
-    color: '#6B9EC9',
-    bg: '#EEF4FB',
-    attachLabel: '安定型',
-    llLabel: '言葉の言語',
-    traits: 'あなたは感情を言語化することが得意で、パートナーへの気持ちを言葉でしっかり伝えられます。「好き」「ありがとう」「助かった」といった言葉が自然と口をつき、相手に安心感を与えます。また相手からの言葉も素直に受け取れるため、言語的なコミュニケーションが豊かな関係を築けます。',
-    strength: 'パートナーとのすれ違いを言葉で解消できる力があります。感情の言語化が上手いため、誤解が生じても話し合いで関係を修復しやすく、長期的に安定した関係を維持できます。',
-    pitfall: '言葉を大切にするあまり、行動よりも「言ってくれること」を優先しすぎることがあります。愛の言語が異なるパートナーには、言葉よりも行動で示してほしいと感じる人もいることを忘れずに。',
-    bestMatch: ['SA', 'SC'],
-    careMatch: ['AA'],
-    advice: 'あなたの言葉の力は本物です。ただ、相手の「愛の言語」に合わせて、時には言葉だけでなく行動や存在で示すことも意識してみましょう。言葉×行動の組み合わせは最強です。',
-  },
-  SA: {
-    name: '行動の設計者',
-    subtitle: '愛を行動で示す、信頼の構築者',
-    icon: '🛠',
-    attachment: 'secure',
-    loveLanguage: 'acts',
-    color: '#5A9D6B',
-    bg: '#EEF6EE',
-    attachLabel: '安定型',
-    llLabel: '行為の言語',
-    traits: 'あなたにとって愛情とは「行動」で示すものです。言葉より先に動き、パートナーのために買い物を手伝ったり、体調が悪いときにそっとケアしたりと、日常の小さな行動で愛を伝えます。また相手のそうした気遣いにも敏感で、行動の中に愛を読み取る力があります。',
-    strength: '口約束より行動で信頼を積み上げていくため、長期的な関係ほど深い絆が生まれます。言葉が苦手なパートナーとも、行動を通じた心地よい関係を築けます。',
-    pitfall: '「察してもらえるはず」という思い込みから、言語的なコミュニケーションを省略しがちです。行動しているつもりが相手に伝わっていないケースもあるため、時には言葉で補足することが大切です。',
-    bestMatch: ['SW', 'ST'],
-    careMatch: ['AW'],
-    advice: 'あなたの行動力と思いやりは、パートナーの日常を確実に豊かにしています。ただ、行動と一言「あなたのためだよ」を添えると、伝わる力が2倍になります。',
-  },
-  ST: {
-    name: '時間の共有者',
-    subtitle: '共に過ごす時を最も大切にする、存在の愛情家',
-    icon: '🌅',
-    attachment: 'secure',
-    loveLanguage: 'time',
-    color: '#C9954A',
-    bg: '#FDF5E6',
-    attachLabel: '安定型',
-    llLabel: '時間の言語',
-    traits: 'あなたにとって最高の愛情表現は「一緒にいること」です。特別なデートより、何気ない週末を共に過ごすことに幸せを感じます。安定した愛着基盤があるため、パートナーとの時間を楽しみながらも、一人の時間もきちんと持てるバランス感覚があります。',
-    strength: '「ただそこにいる」ことで相手に安心感を与えます。特別なことをしなくても、存在そのものが愛情になるため、パートナーにとって心の安全基地のような存在になれます。',
-    pitfall: '共有時間を重視するあまり、パートナーが一人の時間や友人との時間を求めると「自分を大切にしてくれていない」と感じてしまうことがあります。',
-    bestMatch: ['SC', 'SA'],
-    careMatch: ['AT'],
-    advice: '一緒にいる時間の「質」をさらに大切にしましょう。スマホをしまって、今この瞬間にいるパートナーだけに集中する時間をつくることが、関係をより深めます。',
-  },
-  SC: {
-    name: 'ぬくもりの探求者',
-    subtitle: '体温で愛を確かめる、感覚に正直な人',
-    icon: '🤝',
-    attachment: 'secure',
-    loveLanguage: 'touch',
-    color: '#C96B4A',
-    bg: '#F5EAE4',
-    attachLabel: '安定型',
-    llLabel: '触れ合いの言語',
-    traits: 'あなたにとって愛は「感覚」で伝わるものです。手を繋ぐ、肩に触れる、ハグをする——そうした身体的な触れ合いの中に、言葉では表せない深い安心感と愛情を感じます。安定した愛着基盤があるため、スキンシップを過剰に求めるのではなく、自然な形で愛を確かめ合えます。',
-    strength: '身体的なコミュニケーションが豊かなため、言葉が少なくてもパートナーに安心感を与えられます。体調が悪いとき、落ち込んでいるときに寄り添う力が特に光ります。',
-    pitfall: '物理的な距離（遠距離恋愛・仕事で会えない時期など）で不安を感じやすくなります。また、スキンシップが苦手なパートナーとはすれ違いが生じることも。',
-    bestMatch: ['ST', 'SW'],
-    careMatch: ['AC'],
-    advice: '触れ合いの力を信じてください。ただし、相手のパーソナルスペースや好みも尊重しながら、お互いにとって心地よいスキンシップの形を見つけましょう。',
-  },
-  AW: {
-    name: '言葉の渇望者',
-    subtitle: '言葉で安心を求める、繊細な感受性の持ち主',
-    icon: '🌸',
-    attachment: 'anxious',
-    loveLanguage: 'words',
-    color: '#D4829A',
-    bg: '#FAF0F4',
-    attachLabel: '不安型',
-    llLabel: '言葉の言語',
-    traits: 'あなたはパートナーからの言葉に強く反応します。「好き」「大切にしてるよ」という言葉が聞けると深く安心し、逆に言葉が少ないと不安を感じやすくなります。感受性が豊かで、相手の一言に喜んだり傷ついたりする繊細さを持っています。',
-    strength: '感受性の高さから、相手の気持ちの変化に敏感です。パートナーが落ち込んでいるとき、言葉で深く共感できる力があります。言語的なコミュニケーションへの意識が高いため、話し合いを大切にする関係を作れます。',
-    pitfall: '言葉による確認・承認を求めすぎると、パートナーに負担をかけることがあります。「なぜ言ってくれないの」という不満が積もりやすいため、相手の愛の表現方法の違いを理解することが鍵です。',
-    bestMatch: ['SW', 'SA'],
-    careMatch: ['SC'],
-    advice: '言葉に価値を置くあなたの感性は素晴らしいものです。ただ、パートナーが行動や存在で愛を示しているとき、それを「言葉の代わり」として受け取る練習をしてみましょう。愛は一つの言語だけで伝わるものではありません。',
-  },
-  AA: {
-    name: '証明の求道者',
-    subtitle: '行動で愛を測る、真剣な愛の確認者',
-    icon: '🔍',
-    attachment: 'anxious',
-    loveLanguage: 'acts',
-    color: '#9B7EC9',
-    bg: '#F5F0F8',
-    attachLabel: '不安型',
-    llLabel: '行為の言語',
-    traits: 'あなたはパートナーの「行動」で愛を測ります。「してくれたかどうか」が愛情のバロメーターになりやすく、サプライズや日常の気遣い行動に深く喜びを感じます。一方で、期待した行動がなかったときに不安や寂しさを感じやすい面もあります。',
-    strength: 'パートナーへの行動力が高く、愛情を惜しみなく行動で注ぎます。「してあげること」への情熱が強いため、パートナーにとって頼もしい存在になれます。',
-    pitfall: '見返りを期待する気持ちが強まると、「こんなにしてあげているのに」という思いが積もりやすくなります。行動の見返りとして愛情を求めるサイクルに入らないよう注意が必要です。',
-    bestMatch: ['SA', 'SW'],
-    careMatch: ['ST'],
-    advice: 'あなたの行動力と深い愛情は本物です。ただ、「してもらえない」ことで愛を疑う前に、パートナーの愛の言語が何かを確認してみましょう。愛の表現は人それぞれです。',
-  },
-  AT: {
-    name: '密着の求道者',
-    subtitle: '一緒にいる時間に安心を求める、深い絆の追求者',
-    icon: '🌙',
-    attachment: 'anxious',
-    loveLanguage: 'time',
-    color: '#7E7EC9',
-    bg: '#F0F0F8',
-    attachLabel: '不安型',
-    llLabel: '時間の言語',
-    traits: 'あなたはパートナーと過ごす時間に深い安心感を求めます。一緒にいることで「自分は大切にされている」と感じ、逆にパートナーが自分より他のことを優先すると強い寂しさや不安を覚えます。深く愛している分、相手への期待も大きくなりやすいです。',
-    strength: 'パートナーとの時間を何より大切にするため、二人の関係を丁寧に育てる力があります。一緒にいることを喜んでくれるパートナーにとっては、これ以上ない愛情深い存在です。',
-    pitfall: '「一緒にいたい」気持ちが強まると、パートナーの個人時間や一人でいることへの要望を「拒絶」に感じてしまうことがあります。自立した時間の大切さを意識することが鍵です。',
-    bestMatch: ['ST', 'SC'],
-    careMatch: ['SW'],
-    advice: '一緒にいたいという気持ちは愛情そのものです。ただ、お互いが「自分の時間」を持てる関係こそが長続きします。パートナーの一人時間を応援できると、むしろ二人の絆は深まります。',
-  },
-  AC: {
-    name: '感覚の依存者',
-    subtitle: '触れ合いで心を満たす、感覚的な愛情の受け取り手',
-    icon: '💗',
-    attachment: 'anxious',
-    loveLanguage: 'touch',
-    color: '#D47A9A',
-    bg: '#FDF0F4',
-    attachLabel: '不安型',
-    llLabel: '触れ合いの言語',
-    traits: 'あなたはスキンシップによって愛情を強く実感します。手を繋ぐ、ハグをする、隣に座る——そうした身体的な接触が「愛されている」という確信につながります。スキンシップが少ない期間が続くと、愛情が薄れたのではないかと不安になりやすい面があります。',
-    strength: '身体的な愛情表現が豊かで、パートナーに安心感を与えることが得意です。落ち込んだ相手をそっと抱きしめる行動力が、関係に温かさをもたらします。',
-    pitfall: 'スキンシップへの依存が強まると、物理的に会えないとき（遠距離・仕事繁忙期）に強い不安を感じやすくなります。また、スキンシップが苦手なパートナーとは根本的な齟齬が生じることも。',
-    bestMatch: ['SC', 'ST'],
-    careMatch: ['SW'],
-    advice: '触れ合いの温かさを知っているあなたは、パートナーに本物の安心感を与えられます。ただ、言葉や時間でも愛を受け取れるよう受け取り方を広げると、どんな状況でも愛情を感じやすくなります。',
-  },
+// ── GROUP DEFINITIONS ─────────────────────────────────────────
+const GROUPS = {
+  E: { label: '恋に火がつきやすい、ときめき主導タイプ', color: '#D4607A', bg: '#FBEAEE', traitName: 'ときめき' },
+  F: { label: '理解・会話・心の接続を重視するタイプ',     color: '#6B8FC9', bg: '#EBF0FA', traitName: '理解・会話' },
+  A: { label: '愛すると深く尽くしやすい、献身タイプ',       color: '#5FA86B', bg: '#EDF7EE', traitName: '献身' },
+  S: { label: '安心・信頼・つながりを育てるタイプ',         color: '#C9954A', bg: '#FDF5E6', traitName: '安心・信頼' },
 };
 
-const ALL_TYPES_ORDER = ['SW','SA','ST','SC','AW','AA','AT','AC'];
+// ── TYPE DEFINITIONS（24タイプ）──────────────────────────────
+const TYPES = {
+  EFAS: { name:'恋愛脳探偵', catch:'好きになると、恋の謎まで解きたくなる。',
+    traits:'好きという気持ちに火がつくと、相手の言葉や態度のすべてが気になって、つい深読みしてしまうタイプ。ときめきを起点に、相手を理解しようと頭を働かせる「恋愛×推理」のハイブリッド。会話の中に隠れたヒントを見つけるのが得意で、恋が始まると一気に観察力が上がる。',
+    strength:'相手の小さな変化や言葉のニュアンスに気づく力があり、早い段階で関係の違和感に気づける。恋愛への情熱と分析力を両立できる稀有なタイプ。',
+    pitfall:'深読みしすぎて、考えすぎ・疑いすぎになることがある。「謎」を解こうとするあまり、ただ素直に気持ちを伝えるタイミングを逃しやすい。',
+    advice:'推理力はあなたの武器ですが、時には答え合わせをせず、ただ「好き」を伝えるだけでいい瞬間もあります。直感を信じてみましょう。' },
+  EFSA: { name:'トキメキ通訳', catch:'このドキドキ、ちゃんと言葉にしたい。',
+    traits:'ときめきを感じると、それを誰よりも丁寧に言葉にしたくなるタイプ。恋愛感情をそのままにせず、会話やメッセージで翻訳して伝えることに喜びを感じる。感情表現が豊かで、相手にも自分の高まる気持ちがちゃんと伝わる。',
+    strength:'自分のときめきを言語化する力が高く、パートナーに気持ちが伝わりやすい。関係の温度感をいつも共有できる安心感がある。',
+    pitfall:'気持ちを伝えることに集中しすぎて、相手の反応のペースを置いていってしまうことがある。',
+    advice:'あなたの言葉の力は関係を温めます。ただ、伝えるだけでなく相手の言葉にも同じだけ耳を傾ける時間を作ってみましょう。' },
+  EAFS: { name:'一途ナイト', catch:'好きになった瞬間から、もう守る側。',
+    traits:'恋に火がつくと、その瞬間から相手を守りたいという気持ちが一気に強くなるタイプ。ときめきと献身が直結しているため、好きになった人には全力で尽くす。一途で真剣な恋愛観を持っている。',
+    strength:'一度好きになると揺るがない忠誠心があり、パートナーに圧倒的な安心感を与えられる。行動力もあるため、有言実行型の愛し方ができる。',
+    pitfall:'尽くすことに気持ちが向きすぎて、自分の気持ちや欲求を後回しにしすぎることがある。',
+    advice:'守りたい気持ちは尊いものですが、自分も守られていい存在だということを忘れないでください。' },
+  EASF: { name:'赤い糸ジャンキー', catch:'ただの恋じゃ足りない、運命であってほしい。',
+    traits:'ときめきに加えて「運命」「特別な縁」という物語性を求めるタイプ。恋愛が始まると、その出会いに意味を見出したくなる。ロマンティックな理想を強く持っている。',
+    strength:'恋愛に対する熱量とロマンが高く、関係に特別感を演出する力がある。パートナーにとって「物語の主人公になれた」と感じさせられる。',
+    pitfall:'理想と現実のギャップにがっかりしやすく、「運命じゃなかったのかも」と落ち込みやすい一面がある。',
+    advice:'運命だと感じる瞬間も、日々の積み重ねで作られていくものです。物語よりも今ここにある関係を大切にしてみましょう。' },
+  ESFA: { name:'恋するこたつ', catch:'恋もしたいけど、最後はほっとしたい。',
+    traits:'ときめきを求めつつも、最終的には穏やかで安心できる関係に落ち着きたいタイプ。刺激と安らぎの両方が欲しい、バランス型の恋愛観を持つ。',
+    strength:'恋の高揚感を楽しみながらも、関係を長く穏やかに続けるための土台づくりが得意。',
+    pitfall:'刺激を求める気持ちと安定を求める気持ちが矛盾し、自分でも何を求めているのか分からなくなることがある。',
+    advice:'ときめきと安心、両方欲しいのは自然なことです。両方を受け入れてくれるパートナーとの関係を大切に育てていきましょう。' },
+  ESAF: { name:'日常ロマンサー', catch:'何でもない毎日を、恋で特別にしてしまう。',
+    traits:'特別なイベントがなくても、日常の中にときめきを見つけるのが得意なタイプ。恋する気持ちが日々のモチベーションになる。',
+    strength:'どんな状況でも恋愛を通してポジティブな気持ちを生み出せる。パートナーの日常に小さな彩りを与えられる存在。',
+    pitfall:'日常への期待値が高くなりすぎて、相手が同じテンションでないとさみしさを感じることがある。',
+    advice:'あなたが生み出すときめきは贈り物です。相手にも同じテンションを求めすぎず、それぞれのペースを認め合いましょう。' },
 
-const AXIS_LABELS = {
-  attachment: '愛着（安定）',
-  words: '言葉の言語',
-  acts: '行為の言語',
-  time: '時間の言語',
-  touch: '触れ合いの言語',
+  FEAS: { name:'沼トーカー', catch:'話してるだけで、気づけば心に住みついてる。',
+    traits:'会話を重ねるうちに、気づかぬうちに相手にどっぷり惚れ込んでしまうタイプ。理解と共感を深めながら、いつの間にか強い感情が芽生えている。',
+    strength:'深い対話を通して関係を築く力があり、表面的な恋愛にとどまらない強い結びつきを作れる。',
+    pitfall:'会話を重ねるほど沼にはまりやすく、気持ちのコントロールが難しくなることがある。',
+    advice:'深い対話力はあなたの魅力です。ただ、ハマる前に少し距離を取って自分の気持ちを確認する時間も作りましょう。' },
+  FESA: { name:'恋愛参謀', catch:'恋も人間関係も、感情だけでは動かない。',
+    traits:'恋愛を客観的に分析し、感情と理性のバランスを取りながら関係を進めるタイプ。会話を通して関係性を戦略的に組み立てる力がある。',
+    strength:'感情に流されず、冷静に関係を見つめる力があるため、長期的に安定した恋愛を築きやすい。',
+    pitfall:'分析しすぎて恋愛が「作業」のように感じられてしまい、ロマンティックな瞬間を見逃すことがある。',
+    advice:'あなたの参謀力は関係を支える土台になります。時には分析を手放して、ただ感情に身を委ねる時間も大切にしましょう。' },
+  FAES: { name:'心読み探偵', catch:'その一言の裏にある本音まで見逃さない。',
+    traits:'相手の言葉の裏にある本音や感情を読み取ることに長けているタイプ。理解力の高さで、好きな人の気持ちにいち早く気づける。',
+    strength:'相手の小さな変化やサインに気づき、早めに寄り添うことができる。深い理解に基づいた愛情を育める。',
+    pitfall:'読み取りすぎて、相手が言っていないことまで先回りして気を遣いすぎることがある。',
+    advice:'あなたの洞察力は素晴らしい力です。ただ、読み取るだけでなく、本人に直接確認する勇気も持ってみましょう。' },
+  FASE: { name:'感情レスキュー', catch:'傷ついた心を見ると、助けずにいられない。',
+    traits:'相手の感情の動きに敏感で、傷ついている様子を見ると放っておけないタイプ。理解と共感をベースに、相手の心を支えることに使命感を感じる。',
+    strength:'相手の心情を察知し、適切なタイミングで寄り添える力がある。感情的なサポーターとして頼られる存在。',
+    pitfall:'相手の感情に引き込まれすぎて、自分の心が疲弊してしまうことがある。',
+    advice:'誰かを救う前に、自分自身の心も大切にケアしてください。あなたが満たされていることが、長く支え続ける力になります。' },
+  FSEA: { name:'親友ラバー', catch:'恋より先に、"いちばん話せる人"になりたい。',
+    traits:'恋愛感情よりも先に、「なんでも話せる関係」を築きたいタイプ。理解と安心を土台にした、友情の延長のような恋愛観を持つ。',
+    strength:'じっくり関係を育てる力があり、恋人になってからも深い信頼関係が続く。',
+    pitfall:'「友達ポジション」に長く留まりすぎて、恋愛関係への一歩がなかなか踏み出せないことがある。',
+    advice:'信頼関係を築く力は何よりの強みです。タイミングを見て、その関係に一歩踏み出す勇気も持ってみましょう。' },
+  FSAE: { name:'安心ブレーン', catch:'好きな人の人生まで、つい一緒に考えてしまう。',
+    traits:'好きな人の将来や悩みまで、自分のことのように一緒に考えてしまうタイプ。理解力と安心感を兼ね備えた、頼れる存在。',
+    strength:'相手の人生に深く向き合う姿勢があり、長期的なパートナーシップを築く力がある。',
+    pitfall:'相手の人生に深く関わりすぎて、口出しが多くなったり、自分の意見を押し付けてしまうことがある。',
+    advice:'一緒に考える姿勢は素敵ですが、最終的な決断は相手のものだということを忘れずに、見守る姿勢も大切にしましょう。' },
+
+  AEFS: { name:'つくし天使', catch:'愛した瞬間、自分のことは後回し。',
+    traits:'好きになった瞬間から、自分のことよりも相手のことを優先してしまうタイプ。献身と情熱が結びつき、惜しみなく愛情を注ぐ。',
+    strength:'全力でパートナーに尽くす姿勢があり、相手に深い愛情と安心感を与えられる。',
+    pitfall:'自分を後回しにしすぎて、気づかぬうちに疲れ果ててしまうことがある。',
+    advice:'尽くす愛は美しいですが、自分の心と体も同じだけ大切にしてください。バランスが長続きの鍵です。' },
+  AESF: { name:'愛しすぎ聖者', catch:'我慢してるのに、それすら愛だと思ってしまう。',
+    traits:'好きな人のためなら我慢も苦労も愛情の一部として受け入れてしまうタイプ。情熱的な献身が時に自己犠牲に近づくこともある。',
+    strength:'どんな状況でも愛情を持ち続ける強さがあり、パートナーにとって絶対的な存在になれる。',
+    pitfall:'我慢を愛だと思い込みすぎて、本来伝えるべき不満や本音を抑え込んでしまうことがある。',
+    advice:'愛は我慢だけで成り立つものではありません。本音を伝えることも、健全な愛情表現の一つだと知ってください。' },
+  AFES: { name:'共感ナース', catch:'好きな人の痛みを、自分のことみたいに感じる。',
+    traits:'好きな人が悲しんでいたり苦しんでいると、自分のことのように感じてしまうタイプ。献身と理解を併せ持つ、深い共感力の持ち主。',
+    strength:'相手の痛みに寄り添う力が強く、心のケアが必要な瞬間に頼れる存在になれる。',
+    pitfall:'共感しすぎて自分の感情との境界が曖昧になり、共倒れしてしまうことがある。',
+    advice:'共感する力は素晴らしい才能です。ただ、相手の感情と自分の感情を分けて考える練習も必要です。' },
+  AFSE: { name:'メンタル番犬', catch:'大事な人の心は、私がずっと守っていたい。',
+    traits:'大切な人の心を守ることに強い使命感を持つタイプ。献身と安心感を軸に、パートナーの心の安全基地になろうとする。',
+    strength:'相手の心を守るための行動力と継続力があり、長期的に安定した安心感を提供できる。',
+    pitfall:'守ろうとする気持ちが強すぎて、過保護になったり、相手の自立を妨げてしまうことがある。',
+    advice:'守る愛は尊いものですが、相手が自分の力で立つ姿も信じて見守ってあげましょう。' },
+  ASEF: { name:'おかえり守護神', catch:'どんな日も、"帰れる場所"でありたい。',
+    traits:'パートナーにとっての「帰る場所」になりたいと願うタイプ。献身と安心感を土台に、いつも変わらず迎えてくれる存在を目指す。',
+    strength:'安定した献身と変わらない態度で、相手に深い安心感を与えられる。',
+    pitfall:'自分の変化や成長を後回しにして、「変わらないこと」にこだわりすぎることがある。',
+    advice:'変わらない安心感は大切な愛ですが、あなた自身も変化し成長していい存在だということを忘れないでください。' },
+  ASFE: { name:'世話焼きエンジェル', catch:'愛情は、やさしさと面倒見のよさで伝わる。',
+    traits:'やさしさと気配りで愛情を表現するタイプ。献身と安心感をベースに、相手の生活全般をサポートしたくなる。',
+    strength:'細やかな気配りと面倒見の良さで、パートナーの日常を支える力がある。',
+    pitfall:'世話をしすぎて、相手の自主性を奪ってしまったり、自分が尽くしすぎて疲れてしまうことがある。',
+    advice:'あなたの気配りは大きな愛情です。時には何もしないで「ただ一緒にいる」だけの愛し方も試してみましょう。' },
+
+  SEFA: { name:'実家ラバー', catch:'一緒にいるだけで、なぜか心がほどけていく。',
+    traits:'一緒にいるだけで自然と心がほどけていく、安心感を軸にしたタイプ。ときめきと安心を兼ね備えた、居心地のよい関係を作る。',
+    strength:'パートナーにとって「実家のような安心感」を提供できる、唯一無二の存在になれる。',
+    pitfall:'安心しすぎて関係に新鮮さがなくなり、刺激不足を感じさせてしまうことがある。',
+    advice:'安心感はあなたの最大の魅力です。時には小さなサプライズや変化を加えて、関係に新しい風を吹き込んでみましょう。' },
+  SEAF: { name:'平和番長', catch:'ドキドキより、穏やかに続く恋がいちばん強い。',
+    traits:'刺激的な恋愛より、穏やかで波風の立たない関係を理想とするタイプ。安心感と献身を併せ持ち、平和な関係を守る力がある。',
+    strength:'衝突を避け、関係を穏やかに保つ力に優れている。長期的な安定したパートナーシップを築きやすい。',
+    pitfall:'平和を保つことを優先しすぎて、本当に伝えるべき意見や本音を飲み込んでしまうことがある。',
+    advice:'平和を守る力は素晴らしいものですが、時には正直な気持ちをぶつけることも、より深い信頼関係につながります。' },
+  SFEA: { name:'ぬくもり通訳', catch:'言葉にしなくても、やさしさはちゃんと伝わる。',
+    traits:'言葉より態度や雰気で愛情を伝えるタイプ。安心感と理解力を併せ持ち、静かなコミュニケーションを大切にする。',
+    strength:'言葉を介さなくても相手に安心感を与えられる、温かい存在感がある。',
+    pitfall:'言葉での表現を省略しすぎて、相手に気持ちが伝わっていないことに気づかないことがある。',
+    advice:'雰気で伝える力は魅力ですが、時には言葉にして気持ちを伝えることで、関係がもっと深まります。' },
+  SFAE: { name:'相談ホイホイ', catch:'気づけばみんなの本音が、ここに集まってくる。',
+    traits:'周囲から自然と相談されるタイプ。安心感と理解力を兼ね備え、誰もが本音を話しやすい空気を作れる。',
+    strength:'包容力があり、パートナーが心を開きやすい関係を築ける。信頼の土台が強い。',
+    pitfall:'相談される立場に慣れすぎて、自分自身の悩みや本音を後回しにしてしまうことがある。',
+    advice:'誰かの本音を受け止める力は貴重です。あなた自身の本音も誰かに話していい、ということを忘れないでください。' },
+  SAEF: { name:'身内モンスター', catch:'好きになるほど、もう他人ではいられない。',
+    traits:'好きになった人を、すぐに「身内」のような存在として受け入れるタイプ。安心感と献身を併せ持ち、距離を一気に縮める力がある。',
+    strength:'深い結びつきをすぐに築く力があり、パートナーに圧倒的な所属感・安心感を与えられる。',
+    pitfall:'距離を縮めすぎて、相手のペースを無視してしまったり、依存的になりやすいことがある。',
+    advice:'距離を縮める力は魅力的ですが、相手にもペースがあることを理解し、適度な距離感も大切にしましょう。' },
+  SAFE: { name:'最後の味方', catch:'どんなときでも、最後まであなたの側にいる。',
+    traits:'どんな状況でも変わらずパートナーの味方であり続けるタイプ。安心感と献身を軸に、揺るがない忠誠心を持つ。',
+    strength:'困難な状況でも変わらず支え続ける力があり、パートナーにとって最も信頼できる存在になれる。',
+    pitfall:'味方であろうとしすぎて、相手の間違いや課題に対して必要な指摘ができなくなることがある。',
+    advice:'揺るがない味方であることは大きな愛ですが、時には率直な意見を伝えることも、本当の愛情表現の一つです。' },
+};
+
+// 4文字タイプコードからグループ情報・画像パスを補完する
+for (const id of Object.keys(TYPES)) {
+  const lead = id[0];
+  const g = GROUPS[lead];
+  TYPES[id].group = lead;
+  TYPES[id].color = g.color;
+  TYPES[id].bg = g.bg;
+  TYPES[id].groupLabel = g.label;
+  TYPES[id].image = `img/${id}.png`;
+}
+
+const ALL_TYPES_ORDER = Object.keys(TYPES);
+
+const TRAIT_LABELS = {
+  E: 'E・ときめき',
+  F: 'F・理解会話',
+  A: 'A・献身',
+  S: 'S・安心信頼',
 };
 
 const STORAGE_RESULT = 'aiknow_amatrica_result';
+
+// ── COMPATIBILITY（4文字の並び替えから動的に算出）──────────
+function swapLetters(id, i, j) {
+  const a = id.split('');
+  [a[i], a[j]] = [a[j], a[i]];
+  return a.join('');
+}
+function getBestMatches(typeId) {
+  const swap12 = swapLetters(typeId, 0, 1);
+  const swap34 = swapLetters(typeId, 2, 3);
+  return [...new Set([swap12, swap34])].filter(id => id !== typeId);
+}
+function getCareMatches(typeId) {
+  const reversed = typeId.split('').reverse().join('');
+  return [reversed];
+}
 
 // ── INIT ──────────────────────────────────────────────────────
 function init() {
@@ -528,7 +567,7 @@ function init() {
   const typeParam = params.get('type');
 
   let typeId = typeParam;
-  let normalized = null;
+  let traits = null;
 
   // ?type=XXX が指定されていない場合のみ localStorage を参照
   if (!typeParam) {
@@ -537,7 +576,7 @@ function init() {
       if (saved) {
         const data = JSON.parse(saved);
         typeId = data.typeId;
-        normalized = data.normalized || null;
+        traits = data.traits || null;
       }
     } catch (e) {}
   } else {
@@ -546,7 +585,7 @@ function init() {
       const saved = localStorage.getItem(STORAGE_RESULT);
       if (saved) {
         const data = JSON.parse(saved);
-        normalized = data.normalized || null;
+        traits = data.traits || null;
       }
     } catch (e) {}
   }
@@ -558,11 +597,11 @@ function init() {
     return;
   }
 
-  renderResult(typeId, normalized);
+  renderResult(typeId, traits);
 }
 
 // ── RENDER ────────────────────────────────────────────────────
-function renderResult(typeId, normalized) {
+function renderResult(typeId, traits) {
   const t = TYPES[typeId];
 
   // Apply type colors
@@ -572,19 +611,20 @@ function renderResult(typeId, normalized) {
   // Update OGP meta dynamically
   document.title = `「${t.name}」でした | アマトリカ診断`;
   document.querySelector('meta[name="description"]').content =
-    `${t.subtitle} — アマトリカ診断の結果ページ`;
+    `${t.catch} — アマトリカ診断の結果ページ`;
 
-  // Hero
-  document.getElementById('typeEyebrow').textContent =
-    `${t.attachLabel} × ${t.llLabel}`;
-  document.getElementById('typeIconWrap').textContent = t.icon;
+  // Hero（ファーストビューにキャラクター画像を表示）
+  document.getElementById('typeEyebrow').textContent = t.groupLabel;
+  document.getElementById('typeIconWrap').innerHTML =
+    `<img src="${t.image}" alt="${t.name}のキャラクター画像" loading="eager">`;
+  document.getElementById('typeCode').textContent = typeId;
   document.getElementById('typeName').textContent = t.name;
-  document.getElementById('typeSubtitle').textContent = t.subtitle;
+  document.getElementById('typeSubtitle').textContent = t.catch;
 
-  document.getElementById('typeBadges').innerHTML = `
-    <span class="badge badge-attach">${t.attachLabel === '安定型' ? '🟢' : '🟡'} ${t.attachLabel}</span>
-    <span class="badge badge-ll">💝 ${t.llLabel}</span>
-  `;
+  document.getElementById('typeBadges').innerHTML =
+    typeId.split('').map(letter =>
+      `<span class="badge badge-ll" style="background:${GROUPS[letter].bg};color:${GROUPS[letter].color}">${TRAIT_LABELS[letter]}</span>`
+    ).join('');
 
   // Traits
   document.getElementById('traitText').textContent = t.traits;
@@ -594,10 +634,10 @@ function renderResult(typeId, normalized) {
   document.getElementById('pitfallText').textContent = t.pitfall;
 
   // Score bars
-  renderScoreBars(normalized, typeId);
+  renderScoreBars(traits, typeId);
 
   // Compatibility
-  renderCompatibility(t);
+  renderCompatibility(typeId);
 
   // Advice
   document.getElementById('adviceText').textContent = t.advice;
@@ -606,31 +646,30 @@ function renderResult(typeId, normalized) {
   renderOtherTypes(typeId);
 }
 
-function renderScoreBars(normalized, typeId) {
-  const t = TYPES[typeId];
+function renderScoreBars(traits, typeId) {
   const container = document.getElementById('scoreBars');
   container.innerHTML = '';
 
-  const axes = ['attachment', 'words', 'acts', 'time', 'touch'];
-  const highlights = { attachment: t.attachment === 'secure', [t.loveLanguage]: true };
+  const letters = ['E', 'F', 'A', 'S'];
+  const topLetter = typeId[0];
 
-  for (const ax of axes) {
-    const pct = normalized ? Math.round(normalized[ax] * 100) : 50;
-    const isHighlight = highlights[ax];
+  for (const letter of letters) {
+    const pct = traits ? Math.round(traits[letter] * 100) : 50;
+    const isHighlight = letter === topLetter;
 
     const row = document.createElement('div');
     row.className = 'score-row';
     row.setAttribute('role', 'meter');
-    row.setAttribute('aria-label', `${AXIS_LABELS[ax]}: ${pct}%`);
+    row.setAttribute('aria-label', `${TRAIT_LABELS[letter]}: ${pct}%`);
     row.setAttribute('aria-valuenow', pct);
     row.setAttribute('aria-valuemin', 0);
     row.setAttribute('aria-valuemax', 100);
     row.innerHTML = `
-      <span class="score-label">${AXIS_LABELS[ax]}</span>
+      <span class="score-label">${TRAIT_LABELS[letter]}</span>
       <div class="score-bar-bg">
         <div class="score-bar-fill${isHighlight ? ' highlight' : ''}" style="width:0%" data-pct="${pct}"></div>
       </div>
-      <span class="score-pct">${normalized ? pct + '%' : '—'}</span>
+      <span class="score-pct">${traits ? pct + '%' : '—'}</span>
     `;
     container.appendChild(row);
   }
@@ -643,23 +682,23 @@ function renderScoreBars(normalized, typeId) {
   });
 }
 
-function renderCompatibility(t) {
+function renderCompatibility(typeId) {
   const grid = document.getElementById('compatGrid');
-  const bestNames = t.bestMatch.map(id => TYPES[id]?.name || id);
-  const careNames = t.careMatch.map(id => TYPES[id]?.name || id);
+  const bestMatch = getBestMatches(typeId);
+  const careMatch = getCareMatches(typeId);
+
+  const chip = id => TYPES[id]
+    ? `<a href="result.html?type=${id}" class="compat-chip">${TYPES[id].name}（${id}）</a>`
+    : '';
 
   grid.innerHTML = `
     <div class="compat-card compat-good">
       <div class="compat-label">✅ 相性が良いタイプ</div>
-      <div class="compat-types">
-        ${t.bestMatch.map(id => `<a href="result.html?type=${id}" class="compat-chip">${TYPES[id]?.icon} ${TYPES[id]?.name}</a>`).join('')}
-      </div>
+      <div class="compat-types">${bestMatch.map(chip).join('')}</div>
     </div>
     <div class="compat-card compat-care">
       <div class="compat-label">⚠️ 注意が必要なタイプ</div>
-      <div class="compat-types">
-        ${t.careMatch.map(id => `<a href="result.html?type=${id}" class="compat-chip">${TYPES[id]?.icon} ${TYPES[id]?.name}</a>`).join('')}
-      </div>
+      <div class="compat-types">${careMatch.map(chip).join('')}</div>
     </div>
   `;
 }
@@ -667,23 +706,36 @@ function renderCompatibility(t) {
 function renderOtherTypes(currentId) {
   const grid = document.getElementById('otherTypesGrid');
   grid.innerHTML = '';
+  grid.className = '';
 
-  for (const id of ALL_TYPES_ORDER) {
-    const t2 = TYPES[id];
-    const isCurrent = id === currentId;
-    const a = document.createElement('a');
-    a.href = isCurrent ? '#' : `result.html?type=${id}`;
-    a.className = 'other-type-link' + (isCurrent ? ' current' : '');
-    a.setAttribute('aria-label', `${t2.name}${isCurrent ? '（あなたのタイプ）' : 'の結果を見る'}`);
-    if (isCurrent) a.setAttribute('aria-current', 'page');
-    a.innerHTML = `
-      <span class="other-type-icon" aria-hidden="true">${t2.icon}</span>
-      <div class="other-type-info">
-        <div class="other-type-badge">${t2.attachLabel} × ${t2.llLabel.replace('の言語','')}</div>
-        <div class="other-type-name">${t2.name}</div>
-      </div>
-    `;
-    grid.appendChild(a);
+  for (const lead of ['E', 'F', 'A', 'S']) {
+    const groupWrap = document.createElement('div');
+    groupWrap.className = 'other-group';
+    groupWrap.innerHTML = `<div class="other-group-label" style="color:${GROUPS[lead].color}">${lead}始まり — ${GROUPS[lead].traitName}</div>`;
+
+    const groupGrid = document.createElement('div');
+    groupGrid.className = 'other-types-grid';
+
+    for (const id of ALL_TYPES_ORDER.filter(id => id[0] === lead)) {
+      const t2 = TYPES[id];
+      const isCurrent = id === currentId;
+      const a = document.createElement('a');
+      a.href = isCurrent ? '#' : `result.html?type=${id}`;
+      a.className = 'other-type-link' + (isCurrent ? ' current' : '');
+      a.setAttribute('aria-label', `${t2.name}${isCurrent ? '（あなたのタイプ）' : 'の結果を見る'}`);
+      if (isCurrent) a.setAttribute('aria-current', 'page');
+      a.innerHTML = `
+        <img class="other-type-thumb" src="${t2.image}" alt="" loading="lazy">
+        <div class="other-type-info">
+          <div class="other-type-badge">${id}</div>
+          <div class="other-type-name">${t2.name}</div>
+        </div>
+      `;
+      groupGrid.appendChild(a);
+    }
+
+    groupWrap.appendChild(groupGrid);
+    grid.appendChild(groupWrap);
   }
 }
 
@@ -694,7 +746,7 @@ function getShareText() {
     try { return JSON.parse(localStorage.getItem(STORAGE_RESULT) || '{}').typeId; } catch(e) { return ''; }
   })();
   const t = TYPES[typeId] || {};
-  return `私のアマトリカ診断の結果は【${t.name || '?'}】でした！\n${t.subtitle || ''}\n\n#アマトリカ診断 #愛の言語 #恋愛タイプ`;
+  return `私のアマトリカ診断の結果は【${t.name || '?'}（${typeId}）】でした！\n${t.catch || ''}\n\n#アマトリカ診断 #恋愛タイプ`;
 }
 
 function shareX() {

@@ -586,6 +586,12 @@ function saveProgress() {
 }
 
 // ── CALCULATE ─────────────────────────────────────────────────
+// アマトリカ診断は4つのトレイト（E/F/A/S）の優先順位で24タイプを判定する
+//   E = ときめき主導（touch軸を流用）
+//   F = 理解・会話（words軸）
+//   A = 献身（acts軸）
+//   S = 安心・信頼（time軸）
+// スコアが高い順に並べた4文字が typeId になる（例: EFAS）
 function calculateResult() {
   const scores = { attachment:0, words:0, acts:0, time:0, touch:0 };
   const maxes  = { attachment:0, words:0, acts:0, time:0, touch:0 };
@@ -608,20 +614,21 @@ function calculateResult() {
     norm[ax] = maxes[ax] > 0 ? scores[ax] / maxes[ax] : 0;
   }
 
-  const attachmentType = norm.attachment >= 0.5 ? 'secure' : 'anxious';
-
-  const llAxes = ['words', 'acts', 'time', 'touch'];
-  const primaryLL = llAxes.reduce((a, b) => norm[a] >= norm[b] ? a : b);
-
-  const typeMap = {
-    secure_words:'SW', secure_acts:'SA', secure_time:'ST', secure_touch:'SC',
-    anxious_words:'AW', anxious_acts:'AA', anxious_time:'AT', anxious_touch:'AC',
+  const traits = {
+    E: norm.touch,
+    F: norm.words,
+    A: norm.acts,
+    S: norm.time,
   };
 
+  const typeId = Object.keys(traits)
+    .sort((a, b) => traits[b] - traits[a])
+    .join('');
+
   return {
-    typeId: typeMap[`${attachmentType}_${primaryLL}`],
-    attachmentType,
-    primaryLL,
+    typeId,
+    traits,
+    attachment: norm.attachment,
     scores,
     normalized: norm,
   };
