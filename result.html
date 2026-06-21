@@ -4,15 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>診断結果 — アマトリカ診断</title>
-  <meta name="description" content="あなたのアマトリカ診断結果です。">
+  <meta name="description" content="アマトリカ診断の結果ページです。ときめき・理解会話・献身・安心信頼の4要素から判定された、24人のキャラクターのうちあなたのタイプを確認できます。">
+  <link rel="canonical" id="canonicalLink" href="https://tanitanistudio.github.io/amatrica-diagnosis/result.html">
+  <meta name="robots" content="index, follow">
+
   <!-- 直接アクセス時の汎用フォールバック。タイプ別の正確なOGPは share/{typeId}.html が担う -->
-  <meta property="og:title" content="アマトリカ診断 — あなたの「恋し方」タイプ">
-  <meta property="og:description" content="ときめき・理解会話・献身・安心信頼、4つの要素から導かれる24人のキャラクター診断。">
-  <meta property="og:image" content="https://tanitanistudio.github.io/amatrica-diagnosis/img/EFAS.png">
+  <meta property="og:title" id="ogTitle" content="アマトリカ診断 — あなたの「恋し方」タイプ">
+  <meta property="og:description" id="ogDescription" content="ときめき・理解会話・献身・安心信頼の4要素から判定される24人のキャラクター診断。あなたの恋愛タイプをチェックしてみよう。">
+  <meta property="og:image" id="ogImage" content="https://tanitanistudio.github.io/amatrica-diagnosis/img/EFAS.png">
+  <meta property="og:image:width" content="1254">
+  <meta property="og:image:height" content="1254">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:url" id="ogUrl" content="https://tanitanistudio.github.io/amatrica-diagnosis/result.html">
   <meta property="og:type" content="website">
+  <meta property="og:site_name" content="アマトリカ診断">
+  <meta property="og:locale" content="ja_JP">
+
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="アマトリカ診断 — あなたの「恋し方」タイプ">
-  <meta name="twitter:image" content="https://tanitanistudio.github.io/amatrica-diagnosis/img/EFAS.png">
+  <meta name="twitter:title" id="twitterTitle" content="アマトリカ診断 — あなたの「恋し方」タイプ">
+  <meta name="twitter:description" id="twitterDescription" content="ときめき・理解会話・献身・安心信頼の4要素から判定される24人のキャラクター診断。あなたの恋愛タイプをチェックしてみよう。">
+  <meta name="twitter:image" id="twitterImage" content="https://tanitanistudio.github.io/amatrica-diagnosis/img/EFAS.png">
+  <meta name="twitter:image:alt" id="twitterImageAlt" content="アマトリカ診断のキャラクターイラスト">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -616,10 +629,26 @@ function renderResult(typeId, traits) {
   document.documentElement.style.setProperty('--type-color', t.color);
   document.documentElement.style.setProperty('--type-bg', t.bg);
 
-  // Update OGP meta dynamically
-  document.title = `「${t.name}」でした | アマトリカ診断`;
-  document.querySelector('meta[name="description"]').content =
-    `${t.catch} — アマトリカ診断の結果ページ`;
+  // Update meta tags dynamically（直接アクセス・ブラウザ拡張のSEOチェッカー対策）
+  // ※ X/LINE等のクローラーはJSを実行しないため、シェア時の正確なOGPは
+  //   share/{typeId}.html（静的生成）が担う。ここでの更新は直接訪問時の表示用。
+  const fullTitle = `「${t.name}」でした | アマトリカ診断`;
+  const longDescription = `アマトリカ診断で「${t.name}（${typeId}）」と判定されました。${t.catch} ${t.traits.slice(0, 60)}…`;
+  const shareImageUrl = `${BASE_URL}/img/${typeId}.png`;
+  const shareUrl = `${BASE_URL}/share/${typeId}.html`;
+  const selfUrl = `${BASE_URL}/result.html?type=${typeId}`;
+
+  document.title = fullTitle;
+  document.querySelector('meta[name="description"]').content = longDescription;
+  document.getElementById('canonicalLink').href = selfUrl;
+  document.getElementById('ogTitle').content = fullTitle;
+  document.getElementById('ogDescription').content = longDescription;
+  document.getElementById('ogImage').content = shareImageUrl;
+  document.getElementById('ogUrl').content = shareUrl;
+  document.getElementById('twitterTitle').content = fullTitle;
+  document.getElementById('twitterDescription').content = longDescription;
+  document.getElementById('twitterImage').content = shareImageUrl;
+  document.getElementById('twitterImageAlt').content = `アマトリカ診断のキャラクター「${t.name}」のイラスト`;
 
   // Hero（ファーストビューにキャラクター画像を表示）
   document.getElementById('typeEyebrow').textContent = t.groupLabel;

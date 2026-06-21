@@ -38,6 +38,7 @@ fs.mkdirSync(outDir, { recursive: true });
 
 for (const [id, [name, catchphrase]] of Object.entries(CHARACTERS)) {
   const title = `アマトリカ診断｜私は「${name}」でした`;
+  const description = `アマトリカ診断で「${name}」と判定されました。${catchphrase} あなたの恋愛タイプも無料・約3分で診断できます。`;
   const imageUrl = `${BASE_URL}/img/${id}.png`;
   const shareUrl = `${BASE_URL}/share/${id}.html`;
   const resultUrl = `../result.html?type=${id}`;
@@ -48,18 +49,27 @@ for (const [id, [name, catchphrase]] of Object.entries(CHARACTERS)) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${title}</title>
+<meta name="description" content="${description}">
+<link rel="canonical" href="${shareUrl}">
+<meta name="robots" content="index, follow">
 
 <meta property="og:title" content="${title}">
-<meta property="og:description" content="${catchphrase}">
+<meta property="og:description" content="${description}">
 <meta property="og:image" content="${imageUrl}">
+<meta property="og:image:width" content="1254">
+<meta property="og:image:height" content="1254">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:secure_url" content="${imageUrl}">
 <meta property="og:url" content="${shareUrl}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="アマトリカ診断">
+<meta property="og:locale" content="ja_JP">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${title}">
-<meta name="twitter:description" content="${catchphrase}">
+<meta name="twitter:description" content="${description}">
 <meta name="twitter:image" content="${imageUrl}">
+<meta name="twitter:image:alt" content="アマトリカ診断のキャラクター「${name}」のイラスト">
 
 <meta http-equiv="refresh" content="0;url=${resultUrl}">
 <script>window.location.replace('${resultUrl}');</script>
