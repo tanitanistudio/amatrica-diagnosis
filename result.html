@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>診断結果 — アマトリカ診断</title>
   <meta name="description" content="あなたのアマトリカ診断結果です。">
+  <!-- 直接アクセス時の汎用フォールバック。タイプ別の正確なOGPは share/{typeId}.html が担う -->
+  <meta property="og:title" content="アマトリカ診断 — あなたの「恋し方」タイプ">
+  <meta property="og:description" content="ときめき・理解会話・献身・安心信頼、4つの要素から導かれる24人のキャラクター診断。">
+  <meta property="og:image" content="https://tanitanistudio.github.io/amatrica-diagnosis/img/EFAS.png">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="アマトリカ診断 — あなたの「恋し方」タイプ">
+  <meta name="twitter:image" content="https://tanitanistudio.github.io/amatrica-diagnosis/img/EFAS.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -740,28 +748,52 @@ function renderOtherTypes(currentId) {
 }
 
 // ── SHARE ─────────────────────────────────────────────────────
-function getShareText() {
+// X/LINE 等のクローラーはJSを実行せずOGPタグだけを読むため、
+// タイプ別に静的生成した share/{typeId}.html を共有URLとして使う。
+// これにより、シェアされたURLをXで開いた際にキャラクター画像が
+// URLカード（Twitter Card）として正しく表示される。
+const BASE_URL = 'https://tanitanistudio.github.io/amatrica-diagnosis';
+
+function getCurrentTypeId() {
   const params = new URLSearchParams(window.location.search);
-  const typeId = params.get('type') || (() => {
-    try { return JSON.parse(localStorage.getItem(STORAGE_RESULT) || '{}').typeId; } catch(e) { return ''; }
+  return params.get('type') || (() => {
+    try { return JSON.parse(localStorage.getItem(STORAGE_RESULT) || '{}').typeId; } catch (e) { return ''; }
   })();
+}
+
+function getShareUrl() {
+  const typeId = getCurrentTypeId();
+  return `${BASE_URL}/share/${typeId}.html`;
+}
+
+function getShareText() {
+  const typeId = getCurrentTypeId();
   const t = TYPES[typeId] || {};
-  return `私のアマトリカ診断の結果は【${t.name || '?'}（${typeId}）】でした！\n${t.catch || ''}\n\n#アマトリカ診断 #恋愛タイプ`;
+  return `アマトリカ診断で「${t.name || '?'}（${typeId}）」でした！\n${t.catch || ''}`;
 }
 
 function shareX() {
-  const text = encodeURIComponent(getShareText());
-  const url = encodeURIComponent(window.location.href);
-  window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank', 'noopener');
+  const shareUrl = new URL('https://x.com/intent/tweet');
+  shareUrl.searchParams.set('text', getShareText());
+  shareUrl.searchParams.set('url', getShareUrl());
+  shareUrl.searchParams.set('hashtags', 'アマトリカ診断,AIKNOW');
+
+  window.open(
+    shareUrl.toString(),
+    '_blank',
+    'width=550,height=420,noopener,noreferrer'
+  );
 }
 
 function shareLine() {
-  const text = encodeURIComponent(getShareText() + '\n' + window.location.href);
-  window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(getShareText())}`, '_blank', 'noopener');
+  const url = new URL('https://social-plugins.line.me/lineit/share');
+  url.searchParams.set('url', getShareUrl());
+  url.searchParams.set('text', getShareText());
+  window.open(url.toString(), '_blank', 'noopener');
 }
 
 function copyLink() {
-  const url = window.location.href;
+  const url = getShareUrl();
   if (navigator.clipboard) {
     navigator.clipboard.writeText(url).then(() => showToast('リンクをコピーしました ✓'));
   } else {
