@@ -187,7 +187,7 @@
     .score-pct { font-family: var(--font-en); font-size: .75rem; font-weight: 700; color: var(--text-muted); text-align: right; }
 
     /* COMPATIBILITY */
-    .compat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+    .compat-grid { display: grid; grid-template-columns: 1fr; gap: .75rem; }
     .compat-card {
       border-radius: var(--radius-md); padding: 1rem;
       display: flex; flex-direction: column; gap: .5rem;
@@ -246,22 +246,26 @@
     .other-type-name { font-size: .85rem; font-weight: 700; margin-top: .15rem; }
 
     /* RETRY */
-    .retry-section { text-align: center; margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+    .retry-section {
+      text-align: center; margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid var(--border);
+      display: flex; flex-direction: column; align-items: center; gap: .75rem;
+    }
     .btn-retry {
-      display: inline-flex; align-items: center; gap: .5rem;
+      display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
       background: var(--accent); color: #fff; border: none; border-radius: 999px;
       padding: .85rem 2rem; font-size: .95rem; font-weight: 700; cursor: pointer;
       box-shadow: 0 4px 16px rgba(201,107,74,.3);
       transition: background var(--transition), transform var(--transition);
-      text-decoration: none;
+      text-decoration: none; white-space: nowrap;
     }
+    .btn-retry svg { flex-shrink: 0; }
     .btn-retry:hover { background: var(--accent-hover); transform: translateY(-2px); }
     .btn-retry:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
     .btn-lp {
-      display: inline-flex; align-items: center; gap: .4rem;
+      display: inline-flex; align-items: center; justify-content: center; gap: .4rem;
       background: transparent; color: var(--text-muted); border: 1.5px solid var(--border);
       border-radius: 999px; padding: .85rem 2rem;
-      font-size: .95rem; font-weight: 600; cursor: pointer; margin-top: .75rem;
+      font-size: .95rem; font-weight: 600; cursor: pointer;
       transition: var(--transition); text-decoration: none;
     }
     .btn-lp:hover { border-color: var(--text-light); color: var(--text); }
@@ -391,10 +395,9 @@
   <!-- リトライ -->
   <div class="retry-section">
     <a href="quiz.html" class="btn-retry" onclick="return confirmRetry()">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.35"/></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 .49-3.35"></path></svg>
       もう一度診断する
     </a>
-    <br>
     <a href="lp.html" class="btn-lp">トップに戻る</a>
   </div>
 

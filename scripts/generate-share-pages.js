@@ -71,7 +71,6 @@ for (const [id, [name, catchphrase]] of Object.entries(CHARACTERS)) {
 <meta name="twitter:image" content="${imageUrl}">
 <meta name="twitter:image:alt" content="アマトリカ診断のキャラクター「${name}」のイラスト">
 
-<meta http-equiv="refresh" content="0;url=${resultUrl}">
 <script>window.location.replace('${resultUrl}');</script>
 </head>
 <body>
